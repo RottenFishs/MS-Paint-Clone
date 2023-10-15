@@ -1,30 +1,33 @@
 
 import pygame
 import random
+import GUI
 
 screen = pygame.display.set_mode( (512, 512) )
 
 run_program = True
 
-img_data = []
+
 
 dim0_size = 512
 dim1_size = 512
 
-# r_range = random.randrange(255)
-# g_range = random.randrange(255)
-# b_range = random.randrange(255)
+r_range = random.randrange(255)
+g_range = random.randrange(255)
+b_range = random.randrange(255)
 
 fill_color = (255, 255, 255)
 
-for dim0 in range(dim0_size):
-    img_data.append([])
-    for dim1 in range(dim1_size):
-        #fill_color = (random.randrange(r_range), random.randrange(g_range), random.randrange(b_range))
-        img_data[dim0].append(fill_color)
-        pygame.draw.rect(screen, fill_color, pygame.Rect(dim0, dim1, 1, 1))
-        
+# for dim0 in range(dim0_size):
+#     for dim1 in range(dim1_size):
+#         fill_color = (random.randrange(r_range), random.randrange(g_range), random.randrange(b_range))
+#         pygame.draw.rect(screen, fill_color, pygame.Rect(dim0, dim1, 1, 1))
+
+pygame.draw.rect(screen, fill_color,pygame.Rect(0,0,512,512))
+
 pygame.display.flip()
+
+GUI.makeGUI(screen)
 
 class Pencil():
     def __init__(self) -> None:
@@ -58,6 +61,7 @@ pencil_tool = Pencil()
 
 while run_program:
 
+
     for event in pygame.event.get():
 
         if event.type == pygame.QUIT:
@@ -73,7 +77,11 @@ while run_program:
             
             if event.key == pygame.K_s:
                 pygame.image.save(screen, "test_file.png")
-    
+
+
+    GUI.makeGUI(screen)
+
+
     pass # other that happens every tick can go here
 
     pencil_tool.tick()
