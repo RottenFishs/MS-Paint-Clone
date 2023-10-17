@@ -3,11 +3,44 @@ import pygame
 import random
 import GUI
 
-screen = pygame.display.set_mode( (512, 512) )
+screen = pygame.display.set_mode( (512, 512), pygame.RESIZABLE )
 
 run_program = True
 
 
+
+class Canvas:
+    def __init__(self, width = 512, height = 512) -> None:
+        
+        self.width = width
+        self.height = height
+        
+        self.surface = pygame.Surface((width, height))
+        self.surface.fill((255,255,0)) # test function
+        
+        self.x_offset = 0
+        self.y_offset = 0
+        
+        # if this is true, then the canvas and thus the display needs to be redrawn
+        self.undrawn = False
+        
+        self.scale = 1
+
+    def draw(self, window_screen):
+        
+        surf_display = pygame.transform.scale(self.surface, (self.width*self.scale, self.height*self.scale))
+        pygame.Surface.blit(window_screen, surf_display, (self.x_offset, self.y_offset))
+
+    def tick(self):
+        self.scale *= 0.95
+        
+
+
+
+
+
+
+myCanvas = Canvas()
 
 dim0_size = 512
 dim1_size = 512
@@ -48,10 +81,10 @@ class Pencil():
         self.previous_pos = pygame.mouse.get_pos()
         self.drawing = False
 
-    def tick(self):
+    def tick(self, canvas_obj):
         if self.drawing:
             current_pos = pygame.mouse.get_pos()
-            pygame.draw.line(screen, (0, 0, 0), current_pos, self.previous_pos)
+            pygame.draw.line(canvas_obj.surface, (0, 0, 0), current_pos, self.previous_pos)
             self.previous_pos = current_pos
             pygame.display.flip()
 
@@ -67,6 +100,7 @@ while run_program:
         if event.type == pygame.QUIT:
             pygame.quit()
             run_program = False
+            break
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             pencil_tool.mouse_down()
@@ -78,13 +112,16 @@ while run_program:
             if event.key == pygame.K_s:
                 pygame.image.save(screen, "test_file.png")
 
+    if not run_program:
+        break
+    
+    pencil_tool.tick(myCanvas)
+
+    myCanvas.draw(screen)
+    #myCanvas.tick()
 
     GUI.makeGUI(screen)
-
-
+    
     pass # other that happens every tick can go here
 
-    pencil_tool.tick()
-
-
-
+    pygame.display.flip()
