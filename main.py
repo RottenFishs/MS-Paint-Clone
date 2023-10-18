@@ -9,6 +9,39 @@ run_program = True
 dim0_size = 512
 dim1_size = 512
 
+class Canvas:
+    def __init__(self, width = 512, height = 512) -> None:
+        
+        self.width = width
+        self.height = height
+        
+        self.surface = pygame.Surface((width, height))
+        self.surface.fill((255,255,0)) # test function
+        
+        self.x_offset = 0
+        self.y_offset = 0
+        
+        # if this is true, then the canvas and thus the display needs to be redrawn
+        self.undrawn = False
+        
+        self.scale = 1
+
+    def draw(self, window_screen):
+        
+        surf_display = pygame.transform.scale(self.surface, (self.width*self.scale, self.height*self.scale))
+        pygame.Surface.blit(window_screen, surf_display, (self.x_offset, self.y_offset))
+
+    def tick(self):
+        self.scale *= 0.95
+        
+
+
+
+
+
+
+myCanvas = Canvas()
+
 mainGUI = GUI.GUI(screen)
 
 r_range = random.randrange(255)
