@@ -6,11 +6,10 @@ import GUI
 screen = pygame.display.set_mode( (512, 512) )
 
 run_program = True
-
-
-
 dim0_size = 512
 dim1_size = 512
+
+mainGUI = GUI.GUI(screen)
 
 r_range = random.randrange(255)
 g_range = random.randrange(255)
@@ -27,7 +26,6 @@ pygame.draw.rect(screen, fill_color,pygame.Rect(0,0,512,512))
 
 pygame.display.flip()
 
-GUI.makeGUI(screen)
 
 class Pencil():
     def __init__(self) -> None:
@@ -79,8 +77,7 @@ while run_program:
                 pygame.image.save(screen, "test_file.png")
 
 
-    GUI.makeGUI(screen)
-
+    mainGUI.draw()
 
     pass # other that happens every tick can go here
 
