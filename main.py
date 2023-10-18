@@ -3,7 +3,7 @@ import pygame
 import random
 import GUI
 
-screen = pygame.display.set_mode( (512, 512) )
+screen = pygame.display.set_mode( (512, 512), pygame.RESIZABLE )
 
 run_program = True
 dim0_size = 512
@@ -46,10 +46,10 @@ class Pencil():
         self.previous_pos = pygame.mouse.get_pos()
         self.drawing = False
 
-    def tick(self):
+    def tick(self, canvas_obj):
         if self.drawing:
             current_pos = pygame.mouse.get_pos()
-            pygame.draw.line(screen, (0, 0, 0), current_pos, self.previous_pos)
+            pygame.draw.line(canvas_obj.surface, (0, 0, 0), current_pos, self.previous_pos)
             self.previous_pos = current_pos
             pygame.display.flip()
 
@@ -65,6 +65,7 @@ while run_program:
         if event.type == pygame.QUIT:
             pygame.quit()
             run_program = False
+            break
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             pencil_tool.mouse_down()
@@ -76,12 +77,16 @@ while run_program:
             if event.key == pygame.K_s:
                 pygame.image.save(screen, "test_file.png")
 
+    if not run_program:
+        break
+    
+    pencil_tool.tick(myCanvas)
+
+    myCanvas.draw(screen)
+    #myCanvas.tick()
 
     mainGUI.draw()
 
     pass # other that happens every tick can go here
 
-    pencil_tool.tick()
-
-
-
+    pygame.display.flip()
