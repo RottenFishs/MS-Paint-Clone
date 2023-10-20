@@ -128,6 +128,7 @@ while run_program:
     if image_displayed:
         screen.fill((255, 255, 255))
         screen.blit(loaded_image, (0, 0))
+        pygame.display.update()
 
     pencil_tool.tick(myCanvas)
 
