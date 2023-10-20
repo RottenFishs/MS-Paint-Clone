@@ -16,7 +16,7 @@ class Canvas:
         self.height = height
         
         self.surface = pygame.Surface((width, height))
-        self.surface.fill((255,255,0)) # test function
+        self.surface.fill((255,255,255)) # test function
         
         self.x_offset = 0
         self.y_offset = 0
@@ -85,6 +85,8 @@ class Pencil():
             pygame.draw.line(canvas_obj.surface, (0, 0, 0), current_pos, self.previous_pos)
             self.previous_pos = current_pos
             pygame.display.flip()
+
+
 
 
 
