@@ -91,8 +91,7 @@ class Pencil():
 
 
 pencil_tool = Pencil()
-loaded_image = pygame.Surface((512, 512))
-image_displayed = False
+
 
 while run_program:
 
@@ -115,8 +114,9 @@ while run_program:
                 pygame.image.save(screen, "test_file.png")
             if event.key == pygame.K_o:
                 loaded_image = pygame.image.load("test_file.png")
-                image_displayed = True
-            #Added for easy closing since I don't want to move my mouse
+                screen.fill((255, 255, 255))
+                myCanvas.surface.blit(loaded_image, (0, 0))
+                pygame.display.flip()
             if event.key == pygame.K_ESCAPE:
                 pygame.quit()
                 run_program = False
@@ -124,11 +124,8 @@ while run_program:
 
     if not run_program:
         break
-    
-    if image_displayed:
-        screen.fill((255, 255, 255))
-        screen.blit(loaded_image, (0, 0))
-        pygame.display.update()
+
+
 
     pencil_tool.tick(myCanvas)
 
