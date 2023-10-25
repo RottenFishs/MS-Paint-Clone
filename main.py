@@ -45,12 +45,12 @@ class Canvas:
         
         self.scale = 1
 
-    def draw(self, window_screen):
+    def _draw_(self, window_screen):
         # Internal method for drawing the canvas
         surf_display = pygame.transform.scale(self.surface, (self.width*self.scale, self.height*self.scale))
         pygame.Surface.blit(window_screen, surf_display, (self.x_offset, self.y_offset))
 
-    def tick(self):
+    def _tick_(self):
         # Internal method for updating the canvas
         self.scale *= 0.95
         
@@ -120,6 +120,7 @@ class Pencil():
 
 pencil_tool = Pencil()
 
+
 while run_program:
 
 
@@ -139,13 +140,22 @@ while run_program:
             
             if event.key == pygame.K_s:
                 pygame.image.save(screen, "test_file.png")
+            if event.key == pygame.K_o:
+                loaded_image = pygame.image.load("test_file.png")
+                screen.fill((255, 255, 255))
+                myCanvas.surface.blit(loaded_image, (0, 0))
+                pygame.display.flip()
+            if event.key == pygame.K_ESCAPE:
+                pygame.quit()
+                run_program = False
+                break
 
     if not run_program:
         break
     
     pencil_tool._tick_(myCanvas)
 
-    myCanvas.draw(screen)
+    myCanvas._draw_(screen)
 
     main_gui.__draw__()
 
