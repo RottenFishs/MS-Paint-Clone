@@ -1,6 +1,7 @@
 import pygame
 
-class GUI():
+
+class GUI:
     """A class representing the graphical user interface for the MS Paint Clone.
 
     This class provides tools and buttons for interacting with the canvas and selecting colors.
@@ -19,7 +20,8 @@ class GUI():
         selected_color (ColorButton): The currently selected color button.
 
     """
-    class ToolButton():
+
+    class ToolButton:
         """A class representing a tool button in the GUI.
 
         Attributes:
@@ -36,8 +38,10 @@ class GUI():
             x (int): The X-coordinate of the button.
             y (int): The Y-coordinate of the button.
         """
+
         STATIC_SELECTED = "pencil"
-        def __init__(self, x, y, inactive, active,screen,name):
+
+        def __init__(self, x, y, inactive, active, screen, name):
             self.state = False
             self.clicked = False
             self.active_image = active
@@ -46,22 +50,25 @@ class GUI():
             self.mouse_was_pressed = False
             self.image = self.inactive_image
             self.name = name
-            
+
             self.rect = self.image.get_rect()
             self.x = x
             self.y = y
-            self.rect.topleft = (x,y)
-        
+            self.rect.topleft = (x, y)
+
         # Internal method for drawing ToolButtons on the screen
         def _draw_(self):
             position = pygame.mouse.get_pos()
             mouse_is_pressed = pygame.mouse.get_pressed()[0] == 1
             if self.rect.collidepoint(position):
-                if  mouse_is_pressed and self.clicked == False and not self.mouse_was_pressed:
+                if (
+                    mouse_is_pressed
+                    and self.clicked == False
+                    and not self.mouse_was_pressed
+                ):
                     self.clicked = True
                     self.state = True
                     GUI.ToolButton.STATIC_SELECTED = self.name
-                    
 
             if GUI.ToolButton.STATIC_SELECTED != self.name:
                 self.state = False
@@ -69,23 +76,24 @@ class GUI():
             if not mouse_is_pressed:
                 self.clicked = False
 
-            
             if not self.state:
                 self.image = self.inactive_image
             else:
                 self.image = self.active_image
-            
+
             self.screen.blit(self.image, (self.rect.x, self.rect.y))
             pygame.display.flip
             self.mouse_was_pressed = mouse_is_pressed
 
-        def _set_active_(self,is_active):
+        def _set_active_(self, is_active):
             # Internal method to change the state of a ToolButton
             if is_active:
                 self.state = True
             else:
                 self.state = False
 
+    class ColorButton:
+        STATIC_SELECTED = (0, 0, 0)
 
     class ColorButton():
         """A class representing a color button in the GUI.
@@ -108,14 +116,18 @@ class GUI():
             self.mouse_was_pressed = False
             self.color = color
             self.screen = screen
-            self.rect = pygame.Rect(x,y,length,width)
+            self.rect = pygame.Rect(x, y, length, width)
 
         def _draw_(self):
             # Internal method to draw color buttons on the GUI
             position = pygame.mouse.get_pos()
             mouse_is_pressed = pygame.mouse.get_pressed()[0] == 1
             if self.rect.collidepoint(position):
-                if  mouse_is_pressed and self.clicked == False and not self.mouse_was_pressed:
+                if (
+                    mouse_is_pressed
+                    and self.clicked == False
+                    and not self.mouse_was_pressed
+                ):
                     self.clicked = True
                     self.state = True
                     GUI.ColorButton.STATIC_SELECTED = self.color
@@ -126,52 +138,74 @@ class GUI():
             if not mouse_is_pressed:
                 self.clicked = False
 
-            pygame.draw.rect(self.screen,self.color,self.rect)
+            pygame.draw.rect(self.screen, self.color, self.rect)
             pygame.display.flip
             self.mouse_was_pressed = mouse_is_pressed
+
         def _set_color_to_selected_(self):
             # Internal method to change the color to the selected color
             self.color = GUI.ColorButton.STATIC_SELECTED
-        
 
-    def __init__(self,screen):
+    def __init__(self, screen):
         self.screen = screen
 
         # Pencil tool
         pencil_inactive_image = pygame.image.load("Images/pencil_inactive.png")
         pencil_active_image = pygame.image.load("Images/pencil_active.png")
-        pencil = GUI.ToolButton(20, 20, pencil_inactive_image, pencil_active_image,self.screen, "pencil")
+        pencil = GUI.ToolButton(
+            20, 20, pencil_inactive_image, pencil_active_image, self.screen, "pencil"
+        )
         pencil._draw_()
         pencil._set_active_(True)
 
-        #Eraser tool
+        # Eraser tool
         eraser_inactive_image = pygame.image.load("Images/eraser_inactive.png")
         eraser_active_image = pygame.image.load("Images/eraser_active.png")
-        eraser = GUI.ToolButton(50, 20, eraser_inactive_image, eraser_active_image,self.screen, "eraser")
+        eraser = GUI.ToolButton(
+            50, 20, eraser_inactive_image, eraser_active_image, self.screen, "eraser"
+        )
         eraser._draw_()
 
         # Fill tool
         fill_inactive_image = pygame.image.load("Images/fill_inactive.png")
         fill_active_image = pygame.image.load("Images/fill_active.png")
-        fill = GUI.ToolButton(80, 20, fill_inactive_image, fill_active_image,self.screen, "fill")
+        fill = GUI.ToolButton(
+            80, 20, fill_inactive_image, fill_active_image, self.screen, "fill"
+        )
         fill._draw_()
 
         # Panning tool
         panning_inactive_image = pygame.image.load("Images/panning_inactive.png")
         panning_active_image = pygame.image.load("Images/panning_active.png")
-        panning = GUI.ToolButton(110, 20, panning_inactive_image, panning_active_image,self.screen, "panning")
+        panning = GUI.ToolButton(
+            110,
+            20,
+            panning_inactive_image,
+            panning_active_image,
+            self.screen,
+            "panning",
+        )
         panning._draw_()
 
         # Brush tool
         brush_inactive_image = pygame.image.load("Images/brush_inactive.png")
         brush_active_image = pygame.image.load("Images/brush_active.png")
-        brush = GUI.ToolButton(140, 20, brush_inactive_image, brush_active_image,self.screen, "brush")
+        brush = GUI.ToolButton(
+            140, 20, brush_inactive_image, brush_active_image, self.screen, "brush"
+        )
         brush._draw_()
 
         # Eyedropper tool
         eyedropper_inactive_image = pygame.image.load("Images/eyedropper_inactive.png")
         eyedropper_active_image = pygame.image.load("Images/eyedropper_active.png")
-        eyedropper = GUI.ToolButton(170, 20, eyedropper_inactive_image, eyedropper_active_image,self.screen, "eyedropper")
+        eyedropper = GUI.ToolButton(
+            170,
+            20,
+            eyedropper_inactive_image,
+            eyedropper_active_image,
+            self.screen,
+            "eyedropper",
+        )
         eyedropper._draw_()
 
         self.eraser = eraser
@@ -181,12 +215,13 @@ class GUI():
         self.brush = brush
         self.eyedroppper = eyedropper
 
-
-        red = GUI.ColorButton(330, 20, (255,0,0), self.screen, 18,18)
-        green = GUI.ColorButton(370, 20, (0,255,0), self.screen, 18,18)
-        blue = GUI.ColorButton(410, 20, (0,0,255), self.screen, 18,18)
-        black = GUI.ColorButton(450, 20, (0,0,0), self.screen, 18,18)
-        selected_color = GUI.ColorButton(240, 13, GUI.ColorButton.STATIC_SELECTED, self.screen, 30,30)
+        red = GUI.ColorButton(330, 20, (255, 0, 0), self.screen, 18, 18)
+        green = GUI.ColorButton(370, 20, (0, 255, 0), self.screen, 18, 18)
+        blue = GUI.ColorButton(410, 20, (0, 0, 255), self.screen, 18, 18)
+        black = GUI.ColorButton(450, 20, (0, 0, 0), self.screen, 18, 18)
+        selected_color = GUI.ColorButton(
+            240, 13, GUI.ColorButton.STATIC_SELECTED, self.screen, 30, 30
+        )
 
         self.red = red
         self.green = green
@@ -194,10 +229,11 @@ class GUI():
         self.black = black
         self.selected_color = selected_color
         pygame.display.flip
+
     def __draw__(self):
-        #Grey Bar on top
-        pygame.draw.rect(self.screen,(187, 192, 199),pygame.Rect(0,0,512,50))
-        pygame.draw.rect(self.screen,(0, 0, 255),pygame.Rect(0,0,512,8))
+        # Grey Bar on top
+        pygame.draw.rect(self.screen, (187, 192, 199), pygame.Rect(0, 0, 512, 50))
+        pygame.draw.rect(self.screen, (0, 0, 255), pygame.Rect(0, 0, 512, 8))
         self.brush._draw_()
         self.eraser._draw_()
         self.fill._draw_()
@@ -212,14 +248,10 @@ class GUI():
         self.selected_color._set_color_to_selected_()
         self.selected_color._draw_()
 
-
         pygame.display.flip
 
     def __get_selected_tool__(self):
         return GUI.ToolButton.STATIC_SELECTED
-    
+
     def __get_selected_color__(self):
         return GUI.ColorButton.STATIC_SELECTED
-
-
-
