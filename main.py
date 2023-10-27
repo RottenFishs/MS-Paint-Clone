@@ -136,7 +136,9 @@ while run_program:
                 # Hide the main window
                 root.withdraw()
                 # Open save file dialog with limited file types
-                file_path = filedialog.asksaveasfilename(filetypes=[('PNG File', '*.png'), ('JPEG File', '*.jpg')])
+                file_path = filedialog.asksaveasfilename(
+                    filetypes=[("PNG File", "*.png"), ("JPEG File", "*.jpg")]
+                )
                 # Save screenshot to the selected file
                 pygame.image.save(pygame.display.get_surface(), file_path)
             if event.key == pygame.K_o:
