@@ -228,7 +228,7 @@ class GUI:
         self.blue = blue
         self.black = black
         self.selected_color = selected_color
-        pygame.display.flip
+        pygame.display.flip()
 
     def __draw__(self):
         # Grey Bar on top
