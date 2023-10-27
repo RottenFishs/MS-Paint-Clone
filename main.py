@@ -140,7 +140,7 @@ while run_program:
                     filetypes=[("PNG File", "*.png"), ("JPEG File", "*.jpg")]
                 )
                 # Save screenshot to the selected file
-                pygame.image.save(pygame.display.get_surface(), file_path)
+                pygame.image.save(myCanvas.surface, file_path)
             if event.key == pygame.K_o:
                 root = tk.Tk()
                 # Hide the main window
