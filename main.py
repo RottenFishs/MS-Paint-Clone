@@ -1,8 +1,7 @@
 import pygame
 import random
 import GUI
-import tkinter as tk
-from tkinter import filedialog
+from image_handler import ImageHandler
 
 # Initialize the Pygame window
 screen = pygame.display.set_mode((512, 512), pygame.RESIZABLE)
@@ -115,7 +114,7 @@ class Pencil:
 
 
 pencil_tool = Pencil()
-
+image_handler = ImageHandler(myCanvas)
 
 while run_program:
     for event in pygame.event.get():
@@ -131,25 +130,9 @@ while run_program:
 
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_s:
-                root = tk.Tk()
-                # Hide the main window
-                root.withdraw()
-                # Open save file dialog with limited file types
-                file_path = filedialog.asksaveasfilename(
-                    filetypes=[("PNG File", "*.png"), ("JPEG File", "*.jpg")]
-                )
-                # Save screenshot to the selected file
-                pygame.image.save(myCanvas.surface, file_path)
+                 image_handler.save_image()
             if event.key == pygame.K_o:
-                root = tk.Tk()
-                # Hide the main window
-                root.withdraw()
-                # Open file explorer
-                file_path = filedialog.askopenfilename()
-                # Load and display the selected image
-                image = pygame.image.load(file_path)
-                myCanvas.surface.blit(image, (0, 0))
-                pygame.display.flip()
+                image_handler.load_image()
             if event.key == pygame.K_ESCAPE:
                 pygame.quit()
                 run_program = False
