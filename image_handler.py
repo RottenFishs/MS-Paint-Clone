@@ -12,7 +12,9 @@ class ImageHandler:
        # Hide the main window
        root.withdraw()
        # Open file explorer
-       file_path = filedialog.askopenfilename()
+       file_path = filedialog.askopenfilename(
+           filetypes=[("PNG File", "*.png"), ("JPEG File", "*.jpg")]
+       )
        # Load and display the selected image
        image = pygame.image.load(file_path)
        self.canvas.surface.blit(image, (0, 0))
