@@ -91,10 +91,7 @@ class GUI:
                 self.state = True
             else:
                 self.state = False
-
-    class ColorButton:
-        STATIC_SELECTED = (0, 0, 0)
-
+                
     class ColorButton():
         """A class representing a color button in the GUI.
 

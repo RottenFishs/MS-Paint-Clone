@@ -4,6 +4,7 @@ import GUI
 import sys
 import tkinter as tk
 from tkinter import filedialog
+import Tools
 
 # Initialize the Pygame window
 screen = pygame.display.set_mode((512, 512), pygame.RESIZABLE)
@@ -65,10 +66,6 @@ myCanvas = Canvas()
 
 main_gui = GUI.GUI(screen)
 
-r_range = random.randrange(255)
-g_range = random.randrange(255)
-b_range = random.randrange(255)
-
 fill_color = (255, 255, 255)
 
 pygame.draw.rect(screen, fill_color, pygame.Rect(0, 0, 512, 512))
@@ -76,47 +73,8 @@ pygame.draw.rect(screen, fill_color, pygame.Rect(0, 0, 512, 512))
 pygame.display.flip()
 
 
-class Pencil:
-    """A class representing a pencil tool for drawing on the canvas.
-
-    Attributes:
-        active (bool): Flag indicating if the tool is currently selected.
-        drawing (bool): Flag indicating if the tool is drawing pixels on the canvas.
-        previous_pos (tuple): The previous mouse cursor position.
-    """
-
-    def __init__(self) -> None:
-        # This tool is currently selected
-        self.active = True
-
-        # Should currently be drawing pixels onto canvas
-        self.drawing = False
-
-        # Some previous coords so the mouse actually draws lines
-        self.previous_pos = (0, 0)
-
-    def _mouse_down_(self):
-        # Internal method for handling mouse down
-        self.previous_pos = pygame.mouse.get_pos()
-        self.drawing = True
-
-    def _mouse_up_(self):
-        # Internal method for handling mouse up
-        self.previous_pos = pygame.mouse.get_pos()
-        self.drawing = False
-
-    def _tick_(self, canvas_obj):
-        # Internal method for updating the pencil tool
-        if self.drawing:
-            current_pos = pygame.mouse.get_pos()
-            color = main_gui.__get_selected_color__()
-            pygame.draw.line(canvas_obj.surface, color, current_pos, self.previous_pos)
-            self.previous_pos = current_pos
-            pygame.display.flip()
-
-
-pencil_tool = Pencil()
-
+tool = Tools.Tool()
+tool.__update_Tool__(main_gui.__get_selected_tool__())
 
 while run_program:
     for event in pygame.event.get():
@@ -126,9 +84,11 @@ while run_program:
             break
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            pencil_tool._mouse_down_()
+            # pencil_tool._mouse_down_()
+            tool._mouse_down_()
         if event.type == pygame.MOUSEBUTTONUP:
-            pencil_tool._mouse_up_()
+            # pencil_tool._mouse_up_()
+            tool._mouse_up_()
 
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_s:
@@ -159,12 +119,13 @@ while run_program:
     if not run_program:
         break
 
-    pencil_tool._tick_(myCanvas)
+    # pencil_tool._tick_(myCanvas)
+    tool._tick_(myCanvas,main_gui.__get_selected_color__())
 
     myCanvas._draw_(screen)
 
     main_gui.__draw__()
-
+    tool.__update_Tool__(main_gui.__get_selected_tool__())
     pass
 
     pygame.display.flip()
