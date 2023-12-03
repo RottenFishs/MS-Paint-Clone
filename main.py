@@ -39,7 +39,10 @@ class Canvas:
         self.surface = pygame.Surface((width, height))
         self.surface.fill((255, 255, 255))  # test function
 
-        self.offset = (0, 50)
+
+        self.offset = (0, 0)
+
+        # self.offset = (0, 50)
 
         # if this is true, then the canvas and thus the display needs to be redrawn
         self.undrawn = False
