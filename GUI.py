@@ -91,11 +91,23 @@ class GUI:
                 self.state = True
             else:
                 self.state = False
+                
+    class ColorButton():
+        """A class representing a color button in the GUI.
 
-    class ColorButton:
-        STATIC_SELECTED = (0, 0, 0)
+        This class defines a button for selecting colors.
 
-        def __init__(self, x, y, color, screen, length, width):
+        Attributes:
+        STATIC_SELECTED (tuple): The currently selected color as an RGB tuple.
+        state (bool): Flag indicating if the button is in an active state.
+        screen (pygame.Surface): The Pygame screen surface.
+        mouse_was_pressed (bool): Flag indicating if the mouse button was pressed.
+        color (tuple): The color associated with the button.
+        rect (pygame.Rect): The rectangle representing the button's position and size.
+
+        """
+        STATIC_SELECTED = (0,0,0)
+        def __init__(self, x, y, color, screen,length, width):
             self.state = False
             self.screen = screen
             self.mouse_was_pressed = False
