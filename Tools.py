@@ -149,18 +149,100 @@ class Brush():
             self.previous_pos = current_pos
             pygame.display.flip()
 
-# class Eraser():
-#     def __init__(self) -> None:
-#         self.pencil = Pencil()
-    
-#     def _mouse_down_(self):
-#         self.pencil._mouse_down_()
-    
-#     def _mouse_up_(self):
-#         self.pencil._mouse_up_()
+class Eraser():
+    """A class representing an eraser tool for erasing on the canvas.
 
-#     def _tick_(self, canvas_obj, color):
-#         self.pencil._tick_(canvas_obj,(255,255,255))
+    Attributes:
+        active (bool): Flag indicating if the tool is currently selected.
+        drawing (bool): Flag indicating if the tool is drawing pixels on the canvas.
+        previous_pos (tuple): The previous mouse cursor position.
+    """
+
+    def __init__(self) -> None:
+        # This tool is currently selected
+        self.active = True
+
+        # Should currently be drawing pixels onto canvas
+        self.drawing = False
+        
+        # represents how large the brush should draw
+        self.size = 2
+
+        # Some previous coords so the mouse actually draws lines
+        self.previous_pos = (0, 0)
+
+        # Color is always white
+        self.color = (255, 255, 255)
+
+    def _mouse_down_(self,canvas_obj):
+        # Internal method for handling mouse down
+        self.previous_pos = pygame.mouse.get_pos()
+        self.drawing = True
+
+    def _mouse_up_(self,canvas_obj):
+        # Internal method for handling mouse up
+        self.previous_pos = pygame.mouse.get_pos()
+        self.drawing = False
+
+    def _mouse_scroll_(self, canvas_obj, dir):
+        # internal method for handling the mouse scrolling
+        
+        if dir == 1:
+            if self.size < 16:
+                self.size += 1
+        elif dir == -1:
+            if self.size > 3:
+                self.size -= 1
+
+    def _tick_(self, canvas_obj, __, ___):
+        # Internal method for updating the pencil tool
+        if self.drawing:
+
+            current_pos = pygame.mouse.get_pos()
+
+            # the current pos needs to be adjusted based on the canvas' size.
+            new_current_pos = (
+                    (current_pos[0] - canvas_obj.offset[0]) / canvas_obj.scale,
+                    (current_pos[1] - canvas_obj.offset[1]) / canvas_obj.scale
+                    )
+
+            # as well as the previous pos. But we don't want to actually edit it.
+            new_prev = (
+                    (self.previous_pos[0] - canvas_obj.offset[0]) / canvas_obj.scale,
+                    (self.previous_pos[1] - canvas_obj.offset[1]) / canvas_obj.scale
+                    )
+            
+            
+            
+            line_length = math.dist(new_prev, new_current_pos)
+            
+            # pygame.draw.circle(canvas_obj.surface, color, new_current_pos, self.size)
+            
+            # draw_coords = (
+            #         ((new_prev[0] * 1) + (new_current_pos[0] * 1))/2,
+            #         ((new_prev[1] * 1) + (new_current_pos[1] * 1)/2),
+            #     )
+            
+            # pygame.draw.circle(canvas_obj.surface, color, draw_coords, self.size)
+            
+            if line_length > 0:
+                
+                steps = math.ceil(line_length)
+                
+                for i in range(steps):
+                    
+                    prev_multi = i
+                    current_multi = steps - i
+                    
+                    draw_coords = (
+                            ((new_prev[0] * prev_multi) + (new_current_pos[0] * current_multi))/steps,
+                            ((new_prev[1] * prev_multi) + (new_current_pos[1] * current_multi))/steps,
+                        )
+                    
+                    pygame.draw.circle(canvas_obj.surface, self.color, draw_coords, self.size)
+            
+            self.previous_pos = current_pos
+            pygame.display.flip()
 
 
 class Fill():
@@ -343,7 +425,7 @@ class Eyedropper():
 
 class Tool():
     pencil_object = Pencil()
-    # eraser_object = Eraser()
+    eraser_object = Eraser()
     fill_object = Fill()
     panning_object = Panning()
     brush_object = Brush()
@@ -351,7 +433,7 @@ class Tool():
 
     tool_dictionary = {
         "pencil": pencil_object,
-        # "eraser": eraser_object,
+        "eraser": eraser_object,
         "fill": fill_object,
         "panning": panning_object,
         "brush": brush_object,
