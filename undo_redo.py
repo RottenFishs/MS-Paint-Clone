@@ -3,13 +3,13 @@ import os
 import glob
 
 class shortcut:
-    def __init__(self,screen) -> None:
+    def __init__(self,canvas_obj) -> None:
         self.counter = 0
         self.size = 1
 
         self.check = False
         blank_file = "canvas_stack/temp_image{}.png".format(0)
-        pygame.image.save(screen,blank_file)
+        pygame.image.save(canvas_obj.surface,blank_file)
 
         pass
 
@@ -21,7 +21,7 @@ class shortcut:
             self.check = False
 
     
-    def save(self,screen):
+    def save(self,canvas_obj):
         if self.check == True:
             self.counter += 1 
             image_file = "canvas_stack/temp_image{}.png".format(self.counter)
@@ -31,7 +31,7 @@ class shortcut:
                     os.remove(delete_file)
 
             self.size = self.counter+1
-            pygame.image.save(screen,image_file)
+            pygame.image.save(canvas_obj.surface,image_file)
     
     def undo(self,canvas_obj):
         if self.counter > 0:
