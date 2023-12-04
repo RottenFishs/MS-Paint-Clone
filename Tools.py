@@ -1,5 +1,6 @@
 import pygame
 
+
 class Pencil():
     """A class representing a pencil tool for drawing on the canvas.
 
@@ -197,6 +198,36 @@ class Panning:
             )
 
 
+class Eyedropper():
+    def __init__(self) -> None:
+        self.eyedropper = False
+        self.color = None
+
+
+
+    def _mouse_down_(self,canvas_obj):
+        # Internal method for handling mouse down
+        x, y = pygame.mouse.get_pos()
+        self.color = canvas_obj.surface.get_at((x, y))
+        # Only keep the RGB components
+        self.color = (self.color.r, self.color.g, self.color.b)
+        if self.color == (255, 255, 255):
+            self.color = (0, 0, 0)
+        #print(f"Color at ({x}, {y}): {self.color}")
+
+    def _mouse_up_(self,canvas_obj):
+        # Internal method for handling mouse up
+        pass
+
+    def _mouse_scroll_(self, canvas_obj, dir):
+        # internal method for handling the mouse scrolling upwards
+        pass
+
+    def _tick_(self, canvas_obj, color):
+        # Internal method for updating the eyedropper tool
+        pass
+
+
 
 class Tool():
     pencil_object = Pencil()
@@ -204,7 +235,7 @@ class Tool():
     fill_object = Fill()
     panning_object = Panning()
     # brush_object = Brush()
-    # eyedropper_object = Eyedropper()
+    eyedropper_object = Eyedropper()
 
     tool_dictionary = {
         "pencil": pencil_object,
@@ -212,7 +243,7 @@ class Tool():
         "fill": fill_object,
         "panning": panning_object,
         # "brush": brush_object,
-        # "eyedropper": eyedropper_object,
+        "eyedropper": eyedropper_object,
     }
 
     def __init__(self):
