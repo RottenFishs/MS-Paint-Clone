@@ -15,10 +15,14 @@ class ImageHandler:
        file_path = filedialog.askopenfilename(
            filetypes=[("PNG File", "*.png"), ("JPEG File", "*.jpg")]
        )
-       # Load and display the selected image
-       image = pygame.image.load(file_path)
-       self.canvas.surface.blit(image, (0, 0))
-       pygame.display.flip()
+        # Check if a file was selected
+       if file_path:
+            # Load and display the selected image
+            image = pygame.image.load(file_path)
+            self.canvas.surface.blit(image, (0, 0))
+            pygame.display.flip()
+       else:
+            print("No file selected.")
 
    def save_image(self):
        root = tk.Tk()
@@ -31,6 +35,6 @@ class ImageHandler:
        # Save screenshot if a file/filepath is selected
        if file_path:
             try:
-                pygame.image.save(self.canvas.surface, file_path)
+                pygame.image.save_extended(self.canvas.surface, file_path)
             except pygame.error as e:
                 print(f"Failed to save image: {e}")
