@@ -81,7 +81,7 @@ pygame.display.flip()
 tool = Tools.Tool()
 tool.__update_Tool__(main_gui.__get_selected_tool__())
 
-shortcut = undo_redo.shortcut(screen)
+shortcut = undo_redo.shortcut(myCanvas)
 
 image_handler = ImageHandler(myCanvas)
 
@@ -99,7 +99,7 @@ while run_program:
 
         elif event.type == pygame.MOUSEBUTTONUP:
             tool._mouse_up_(myCanvas)
-            shortcut.save(screen)
+            shortcut.save(myCanvas)
 
         elif event.type == pygame.MOUSEWHEEL:
             tool._mouse_scroll_(myCanvas,event.y)
