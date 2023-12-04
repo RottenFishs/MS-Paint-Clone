@@ -126,7 +126,7 @@ while run_program:
     if not run_program:
         break
 
-    tool._tick_(myCanvas,main_gui.__get_selected_color__())
+    tool._tick_(myCanvas,main_gui.__get_selected_color__(),main_gui)
 
     myCanvas._draw_(screen)
 

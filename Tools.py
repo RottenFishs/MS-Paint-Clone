@@ -34,7 +34,7 @@ class Pencil():
         # internal method for handling the mouse scrolling upwards
         pass
 
-    def _tick_(self, canvas_obj, color):
+    def _tick_(self, canvas_obj, color, ___):
         # Internal method for updating the pencil tool
         if self.drawing:
 
@@ -101,7 +101,7 @@ class Fill():
     def _mouse_scroll_(self, canvas_obj, dir):
         pass
 
-    def _tick_(self, canvas_obj,color):
+    def _tick_(self, canvas_obj,color,___):
 
         if self.fill:
             current_pos = pygame.mouse.get_pos()
@@ -185,7 +185,7 @@ class Panning:
         elif dir == -1:
             canvas_obj.scale *= 0.9
     
-    def _tick_(self, canvas_obj,color):
+    def _tick_(self, canvas_obj,color,___):
         # Internal method for updating the panning tool
     
         if self.panning:
@@ -205,24 +205,26 @@ class Eyedropper():
 
     def _mouse_down_(self,canvas_obj):
         # Internal method for handling mouse down
-        x, y = pygame.mouse.get_pos()
-        self.color = canvas_obj.surface.get_at((x, y))
-        # Only keep the RGB components
-        self.color = (self.color.r, self.color.g, self.color.b)
-        if self.color == (255, 255, 255):
-            self.color = (0, 0, 0)
-        #print(f"Color at ({x}, {y}): {self.color}")
+
+        if pygame.mouse.get_pos()[1] > 50:
+            self.eyedropper = True
 
     def _mouse_up_(self,canvas_obj):
         # Internal method for handling mouse up
+        self.eyedropper = False
         pass
 
     def _mouse_scroll_(self, canvas_obj, dir):
         # internal method for handling the mouse scrolling upwards
         pass
 
-    def _tick_(self, canvas_obj, color):
+    def _tick_(self, canvas_obj, ___, GUI_obj):
         # Internal method for updating the eyedropper tool
+        if self.eyedropper:
+            x, y = pygame.mouse.get_pos()
+            self.color = canvas_obj.surface.get_at((x, y))
+            GUI_obj.change_selected_color(self.color)
+
         pass
 
 
@@ -253,12 +255,11 @@ class Tool():
     def _mouse_down_(self,canvas_obj):
         self.current_tool._mouse_down_(canvas_obj)
 
-
     def _mouse_up_(self,canvas_obj):
         self.current_tool._mouse_up_(canvas_obj)
 
-    def _tick_(self, canvas_obj, color):
-        self.current_tool._tick_(canvas_obj, color)
+    def _tick_(self, canvas_obj, color, GUI_obj):
+        self.current_tool._tick_(canvas_obj, color, GUI_obj)
   
     def _mouse_scroll_(self, canvas_obj, dir):
         self.current_tool._mouse_scroll_(canvas_obj,dir)

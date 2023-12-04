@@ -143,6 +143,7 @@ class GUI:
             # Internal method to change the color to the selected color
             self.color = GUI.ColorButton.STATIC_SELECTED
 
+
     def __init__(self, screen):
         self.screen = screen
 
@@ -247,6 +248,8 @@ class GUI:
 
         pygame.display.flip
 
+    def change_selected_color(self, new_color):
+            GUI.ColorButton.STATIC_SELECTED = new_color
     def __get_selected_tool__(self):
         return GUI.ToolButton.STATIC_SELECTED
 
