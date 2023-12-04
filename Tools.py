@@ -191,7 +191,7 @@ class Eraser():
             if self.size < 16:
                 self.size += 1
         elif dir == -1:
-            if self.size > 3:
+            if self.size > 1:
                 self.size -= 1
 
     def _tick_(self, canvas_obj, __, ___):
