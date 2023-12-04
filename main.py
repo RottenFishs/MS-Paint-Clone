@@ -47,7 +47,7 @@ class Canvas:
 
         # if this is true, then the canvas and thus the display needs to be redrawn
         self.undrawn = False
-
+        
         self.scale = 1
 
     def _draw_(self, window_screen):
