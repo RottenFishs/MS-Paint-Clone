@@ -1,6 +1,7 @@
 import pygame
 import GUI
 import Tools
+import undo_redo
 from image_handler import ImageHandler
 
 # Initialize the Pygame window
@@ -39,7 +40,10 @@ class Canvas:
         self.surface = pygame.Surface((width, height))
         self.surface.fill((255, 255, 255))  # test function
 
-        self.offset = (0, 50)
+
+        self.offset = (0, 0)
+
+        # self.offset = (0, 50)
 
         # if this is true, then the canvas and thus the display needs to be redrawn
         self.undrawn = False
@@ -77,6 +81,7 @@ pygame.display.flip()
 tool = Tools.Tool()
 tool.__update_Tool__(main_gui.__get_selected_tool__())
 
+shortcut = undo_redo.shortcut(myCanvas)
 
 image_handler = ImageHandler(myCanvas)
 
@@ -84,14 +89,17 @@ while run_program:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
+            shortcut.clearTemp()
             run_program = False
             break
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             tool._mouse_down_(myCanvas)
+            shortcut.check_if_viable(main_gui.__get_selected_tool__())
 
         elif event.type == pygame.MOUSEBUTTONUP:
             tool._mouse_up_(myCanvas)
+            shortcut.save(myCanvas)
 
         elif event.type == pygame.MOUSEWHEEL:
             tool._mouse_scroll_(myCanvas,event.y)
@@ -103,9 +111,15 @@ while run_program:
                  
             if event.key == pygame.K_o:
                 image_handler.load_image()
+
+            if event.key == pygame.K_z and (pygame.key.get_mods() & pygame.KMOD_LCTRL):
+                shortcut.undo(myCanvas)
+            if event.key == pygame.K_y and (pygame.key.get_mods() & pygame.KMOD_LCTRL):
+                shortcut.redo(myCanvas)
                 
             if event.key == pygame.K_ESCAPE:
                 pygame.quit()
+                shortcut.clearTemp()
                 run_program = False
                 break
 

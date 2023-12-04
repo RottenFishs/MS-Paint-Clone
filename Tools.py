@@ -70,6 +70,80 @@ class Pencil():
 #         self.pencil._tick_(canvas_obj,(255,255,255))
 
 
+class Fill():
+    """A class representing a fill tool that colors closed shapes
+
+    Attributes:
+
+    """
+    def __init__(self) -> None:
+
+        self.fill = False
+        self.visited_pixels = set()
+
+        pass
+
+    def _mouse_down_(self, canvas_obj):
+
+        if pygame.mouse.get_pos()[1] > 50:
+            self.fill = True
+
+        pass
+
+    def _mouse_up_(self, canvas_obj):
+
+        self.fill = False
+        self.visited_pixels.clear()
+
+        pass
+
+    def _mouse_scroll_(self, canvas_obj, dir):
+        pass
+
+    def _tick_(self, canvas_obj,color):
+
+        if self.fill:
+            current_pos = pygame.mouse.get_pos()
+            self.fill_pixel(current_pos,canvas_obj,color)
+
+        pass
+
+    #Private function to check and recursively fill in pixels.
+    def fill_pixel(self,current_position,canvas_obj,color):
+
+        old_color = canvas_obj.surface.get_at(current_position)
+        if old_color == color:
+            return
+
+        stack = [current_position]
+        
+        while stack:
+
+            x, y = stack.pop()
+
+            if canvas_obj.surface.get_at((x, y)) == old_color:
+                canvas_obj.surface.set_at((x, y), color)
+
+                #Add left pixel if valid index
+                if x > 0:
+                    stack.append((x-1, y))
+
+                #Add right pixel if valid index
+                if x < canvas_obj.width - 1:
+                    stack.append((x+1, y))
+
+                #Add bottom pixel if valid index
+                if y > 0:
+                    stack.append((x, y-1))
+
+                #Add top pixel if valid index
+                if y < canvas_obj.height - 1:
+                    stack.append((x, y+1))
+
+
+
+
+
 class Panning:
     """A class that represents the Panning tool, for panning around the canvas.
     
@@ -127,7 +201,7 @@ class Panning:
 class Tool():
     pencil_object = Pencil()
     # eraser_object = Eraser()
-    # fill_object = Fill()
+    fill_object = Fill()
     panning_object = Panning()
     # brush_object = Brush()
     # eyedropper_object = Eyedropper()
@@ -135,7 +209,7 @@ class Tool():
     tool_dictionary = {
         "pencil": pencil_object,
         # "eraser": eraser_object,
-        # "fill": fill_object,
+        "fill": fill_object,
         "panning": panning_object,
         # "brush": brush_object,
         # "eyedropper": eyedropper_object,
