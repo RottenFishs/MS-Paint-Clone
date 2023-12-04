@@ -28,5 +28,9 @@ class ImageHandler:
        file_path = filedialog.asksaveasfilename(
            filetypes=[("PNG File", "*.png"), ("JPEG File", "*.jpg")]
        )
-       # Save screenshot to the selected file
-       pygame.image.save(self.canvas.surface, file_path)
+       # Save screenshot if a file/filepath is selected
+       if file_path:
+            try:
+                pygame.image.save(self.canvas.surface, file_path)
+            except pygame.error as e:
+                print(f"Failed to save image: {e}")

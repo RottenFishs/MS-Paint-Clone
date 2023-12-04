@@ -203,8 +203,6 @@ class Eyedropper():
         self.eyedropper = False
         self.color = None
 
-
-
     def _mouse_down_(self,canvas_obj):
         # Internal method for handling mouse down
         x, y = pygame.mouse.get_pos()
