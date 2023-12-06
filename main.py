@@ -43,15 +43,21 @@ class Canvas:
 
         self.offset = (0, 0)
 
-        # self.offset = (0, 50)
-
         # if this is true, then the canvas and thus the display needs to be redrawn
         self.undrawn = False
         
         self.scale = 1
 
-    def _draw_(self, window_screen):
-        # Internal method for drawing the canvas
+    def draw(self, window_screen):
+        """
+        Draws the canvas on the provided screen.
+
+        This method first fills the entire screen with a gray color. Then, it scales the surface of the canvas 
+        according to the current scale factor and blits it onto the provided screen at the current offset.
+
+        Args:
+            window_screen (pygame.Surface): The Pygame screen surface on which the canvas will be drawn.
+        """
         
         fill_color = (127, 127, 127)
         pygame.draw.rect(screen, fill_color, pygame.Rect(0, 0, 512, 512))
@@ -61,10 +67,10 @@ class Canvas:
         )
         pygame.Surface.blit(window_screen, surf_display, self.offset)
 
-    def _tick_(self):
-        # Internal method for updating the canvas
-        # self.scale *= 0.95
-        pass
+    # def _tick_(self):
+    #     # Internal method for updating the canvas
+    #     # self.scale *= 0.95
+    #     pass
 
 
 myCanvas = Canvas()
@@ -79,7 +85,7 @@ pygame.display.flip()
 
 
 tool = Tools.Tool()
-tool.__update_Tool__(main_gui.__get_selected_tool__())
+tool.__update_Tool__(main_gui.get_selected_tool())
 
 shortcut = undo_redo.shortcut(myCanvas)
 
@@ -95,7 +101,7 @@ while run_program:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             tool._mouse_down_(myCanvas)
-            shortcut.check_if_viable(main_gui.__get_selected_tool__())
+            shortcut.check_if_viable(main_gui.get_selected_tool())
 
         elif event.type == pygame.MOUSEBUTTONUP:
             tool._mouse_up_(myCanvas)
@@ -126,13 +132,13 @@ while run_program:
     if not run_program:
         break
 
-    tool._tick_(myCanvas,main_gui.__get_selected_color__(),main_gui)
+    tool._tick_(myCanvas,main_gui.get_selected_color(),main_gui)
 
-    myCanvas._draw_(screen)
+    myCanvas.draw(screen)
 
-    main_gui.__draw__()
+    main_gui.draw()
 
-    tool.__update_Tool__(main_gui.__get_selected_tool__())
+    tool.__update_Tool__(main_gui.get_selected_tool())
     pass
 
     pygame.display.flip()

@@ -56,8 +56,9 @@ class GUI:
             self.y = y
             self.rect.topleft = (x, y)
 
-        # Internal method for drawing ToolButtons on the screen
+
         def _draw_(self):
+            # Internal method for drawing ToolButtons on the screen
             position = pygame.mouse.get_pos()
             mouse_is_pressed = pygame.mouse.get_pressed()[0] == 1
             if self.rect.collidepoint(position):
@@ -85,8 +86,9 @@ class GUI:
             pygame.display.flip
             self.mouse_was_pressed = mouse_is_pressed
 
+
         def _set_active_(self, is_active):
-            # Internal method to change the state of a ToolButton
+        # Internal method to change the state of a ToolButton
             if is_active:
                 self.state = True
             else:
@@ -143,8 +145,18 @@ class GUI:
             # Internal method to change the color to the selected color
             self.color = GUI.ColorButton.STATIC_SELECTED
 
-
+    # Defining the GUI class
     def __init__(self, screen):
+        """
+        Initialize the GUI by creating the color and tool buttons.
+
+        This method sets up the GUI by creating instances of the ToolButton and ColorButton classes for each tool and color. 
+        It also sets the initial selected tool to be pencil and color to be black.
+
+        Args:
+            screen (pygame.Surface): The Pygame screen surface on which the GUI will be drawn.
+
+        """
         self.screen = screen
 
         # Pencil tool
@@ -228,7 +240,22 @@ class GUI:
         self.selected_color = selected_color
         pygame.display.flip
 
-    def __draw__(self):
+
+    def draw(self):
+        """
+        Draws the GUI on the screen.
+
+        This method is responsible for drawing the GUI on the screen. It first draws a grey bar and blue bar on top,
+        then it draws each tool button and color button on the GUI. Finally, it updates the selected color
+        and draws it on the GUI.
+
+        
+        Args:
+            None
+
+        Returns:
+            None
+        """
         # Grey Bar on top
         pygame.draw.rect(self.screen, (187, 192, 199), pygame.Rect(0, 0, 512, 50))
         pygame.draw.rect(self.screen, (0, 0, 255), pygame.Rect(0, 0, 512, 8))
@@ -249,9 +276,47 @@ class GUI:
         pygame.display.flip
 
     def change_selected_color(self, new_color):
-            GUI.ColorButton.STATIC_SELECTED = new_color
-    def __get_selected_tool__(self):
+        """
+        Changes the currently selected color.
+
+        This method updates the static variable STATIC_SELECTED of the ColorButton class 
+        to the new color provided as an argument. This effectively changes the currently 
+        selected color in the GUI.
+
+        Args:
+            new_color (tuple): The new color to be selected, represented as an RGB tuple.
+
+        Returns:
+            None
+        """
+        GUI.ColorButton.STATIC_SELECTED = new_color
+
+    def get_selected_tool(self):
+        """
+        Retrieves the currently selected tool.
+
+        This method returns the static variable STATIC_SELECTED of the ToolButton class,
+        which represents the currently selected tool in the GUI.
+
+        Args:
+            None
+
+        Returns:
+            str: The name of the currently selected tool.
+        """
         return GUI.ToolButton.STATIC_SELECTED
 
-    def __get_selected_color__(self):
+    def get_selected_color(self):
+        """
+        Retrieves the currently selected color.
+
+        This method returns the static variable STATIC_SELECTED of the ColorButton class,
+        which represents the currently selected color in the GUI.
+
+        Args:
+            None
+
+        Returns:
+            tuple: The RGB tuple of the currently selected color.
+        """
         return GUI.ColorButton.STATIC_SELECTED
