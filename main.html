@@ -60,16 +60,16 @@
                                 <a class="variable" href="#Canvas.surface">surface</a>
                         </li>
                         <li>
-                                <a class="variable" href="#Canvas.x_offset">x_offset</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Canvas.y_offset">y_offset</a>
+                                <a class="variable" href="#Canvas.offset">offset</a>
                         </li>
                         <li>
                                 <a class="variable" href="#Canvas.undrawn">undrawn</a>
                         </li>
                         <li>
                                 <a class="variable" href="#Canvas.scale">scale</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Canvas.draw">draw</a>
                         </li>
                 </ul>
 
@@ -81,34 +81,16 @@
                     <a class="variable" href="#main_gui">main_gui</a>
             </li>
             <li>
-                    <a class="variable" href="#r_range">r_range</a>
-            </li>
-            <li>
-                    <a class="variable" href="#g_range">g_range</a>
-            </li>
-            <li>
-                    <a class="variable" href="#b_range">b_range</a>
-            </li>
-            <li>
                     <a class="variable" href="#fill_color">fill_color</a>
             </li>
             <li>
-                    <a class="class" href="#Pencil">Pencil</a>
-                            <ul class="memberlist">
-                        <li>
-                                <a class="variable" href="#Pencil.active">active</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Pencil.drawing">drawing</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Pencil.previous_pos">previous_pos</a>
-                        </li>
-                </ul>
-
+                    <a class="variable" href="#tool">tool</a>
             </li>
             <li>
-                    <a class="variable" href="#pencil_tool">pencil_tool</a>
+                    <a class="variable" href="#shortcut">shortcut</a>
+            </li>
+            <li>
+                    <a class="variable" href="#image_handler">image_handler</a>
             </li>
     </ul>
 
@@ -132,168 +114,149 @@ main    </h1>
                         <label class="view-source-button" for="mod-main-view-source"><span>View Source</span></label>
 
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="kn">import</span> <span class="nn">pygame</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="kn">import</span> <span class="nn">random</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="kn">import</span> <span class="nn">GUI</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="c1"># Initialize the Pygame window</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="n">screen</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">set_mode</span><span class="p">(</span> <span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">),</span> <span class="n">pygame</span><span class="o">.</span><span class="n">RESIZABLE</span> <span class="p">)</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">set_caption</span><span class="p">(</span><span class="s1">&#39;MS Paint Clone&#39;</span><span class="p">)</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="n">run_program</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a><span class="n">dim0_size</span> <span class="o">=</span> <span class="mi">512</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="n">dim1_size</span> <span class="o">=</span> <span class="mi">512</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a>
-</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a><span class="k">class</span> <span class="nc">Canvas</span><span class="p">:</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A class representing a drawing canvas</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="kn">import</span> <span class="nn">GUI</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="kn">import</span> <span class="nn">Tools</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="kn">import</span> <span class="nn">undo_redo</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">from</span> <span class="nn">image_handler</span> <span class="kn">import</span> <span class="n">ImageHandler</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a>
+</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="c1"># Initialize the Pygame window</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="n">screen</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">set_mode</span><span class="p">((</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">),</span> <span class="n">pygame</span><span class="o">.</span><span class="n">RESIZABLE</span><span class="p">)</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a><span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">set_caption</span><span class="p">(</span><span class="s2">&quot;MS Paint Clone&quot;</span><span class="p">)</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="n">run_program</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="n">dim0_size</span> <span class="o">=</span> <span class="mi">512</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a><span class="n">dim1_size</span> <span class="o">=</span> <span class="mi">512</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a>
 </span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a>
-</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a><span class="sd">    Attributes:</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a><span class="sd">        width (int): The width of the canvas.</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a><span class="sd">        height (int): The height of the canvas.</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a><span class="sd">        surface (pygame.Surface): The drawing surface.</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a><span class="sd">        x_offset (int): The X-axis offset for the canvas.</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="sd">        y_offset (int): The Y-axis offset for the canvas.</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a><span class="sd">        undrawn (bool): A flag indicating if the canvas needs to be redrawn.</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="sd">        scale (float): The scaling factor for the canvas.</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="mi">512</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="mi">512</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a><span class="sd">        Initialize a new Canvas.</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a><span class="k">class</span> <span class="nc">Canvas</span><span class="p">:</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A class representing a drawing canvas</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>
+</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a><span class="sd">    Attributes:</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a><span class="sd">        width (int): The width of the canvas.</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="sd">        height (int): The height of the canvas.</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a><span class="sd">        surface (pygame.Surface): The drawing surface.</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="sd">        x_offset (int): The X-axis offset for the canvas.</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a><span class="sd">        y_offset (int): The Y-axis offset for the canvas.</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a><span class="sd">        undrawn (bool): A flag indicating if the canvas needs to be redrawn.</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a><span class="sd">        scale (float): The scaling factor for the canvas.</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a>
-</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a><span class="sd">        Args:</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a><span class="sd">            width (int): The width of the canvas.</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a><span class="sd">            height (int): The height of the canvas.</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a>        
-</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">height</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>        
-</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">surface</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">((</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">fill</span><span class="p">((</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">))</span> <span class="c1"># test function</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>        
-</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">x_offset</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">y_offset</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>        
-</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a>        <span class="c1"># if this is true, then the canvas and thus the display needs to be redrawn</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">undrawn</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a>        
-</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="mi">1</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a>
-</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a>    <span class="k">def</span> <span class="nf">_draw_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window_screen</span><span class="p">):</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>        <span class="c1"># Internal method for drawing the canvas</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a>        <span class="n">surf_display</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">))</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>        <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">window_screen</span><span class="p">,</span> <span class="n">surf_display</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_offset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_offset</span><span class="p">))</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a>
-</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a>    <span class="k">def</span> <span class="nf">_tick_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a>        <span class="c1"># Internal method for updating the canvas</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">*=</span> <span class="mf">0.95</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>        
-</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a>
+</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">512</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a><span class="sd">        Initialize a new Canvas.</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a>
+</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a><span class="sd">        Args:</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a><span class="sd">            width (int): The width of the canvas.</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a><span class="sd">            height (int): The height of the canvas.</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>
+</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">height</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>
+</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">surface</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">((</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">fill</span><span class="p">((</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span>  <span class="c1"># test function</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a>
+</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a>
+</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>
+</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a>        <span class="c1"># if this is true, then the canvas and thus the display needs to be redrawn</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">undrawn</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>        
+</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>
+</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window_screen</span><span class="p">):</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a><span class="sd">        Draws the canvas on the provided screen.</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a>
+</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a><span class="sd">        This method first fills the entire screen with a gray color. Then, it scales the surface of the canvas </span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a><span class="sd">        according to the current scale factor and blits it onto the provided screen at the current offset.</span>
 </span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a>
-</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>
-</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>
-</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>
-</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>
-</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a><span class="n">myCanvas</span> <span class="o">=</span> <span class="n">Canvas</span><span class="p">()</span>
-</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>
-</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a><span class="n">main_gui</span> <span class="o">=</span> <span class="n">GUI</span><span class="o">.</span><span class="n">GUI</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>
-</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a><span class="n">r_range</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span>
-</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a><span class="n">g_range</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a><span class="n">b_range</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a><span class="sd">        Args:</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a><span class="sd">            window_screen (pygame.Surface): The Pygame screen surface on which the canvas will be drawn.</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>        
+</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>        <span class="n">fill_color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">127</span><span class="p">,</span> <span class="mi">127</span><span class="p">,</span> <span class="mi">127</span><span class="p">)</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>        <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">fill_color</span><span class="p">,</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">))</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>        
+</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>        <span class="n">surf_display</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>        <span class="p">)</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>        <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">window_screen</span><span class="p">,</span> <span class="n">surf_display</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">)</span>
 </span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>
-</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a><span class="n">fill_color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
-</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>
-</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">fill_color</span><span class="p">,</span><span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">512</span><span class="p">,</span><span class="mi">512</span><span class="p">))</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>
-</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">flip</span><span class="p">()</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>    <span class="c1"># def _tick_(self):</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>    <span class="c1">#     # Internal method for updating the canvas</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>    <span class="c1">#     # self.scale *= 0.95</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>    <span class="c1">#     pass</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a>
 </span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a>
-</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a>
-</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a><span class="k">class</span> <span class="nc">Pencil</span><span class="p">():</span>
-</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A class representing a pencil tool for drawing on the canvas.</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="n">myCanvas</span> <span class="o">=</span> <span class="n">Canvas</span><span class="p">()</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>
+</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a><span class="n">main_gui</span> <span class="o">=</span> <span class="n">GUI</span><span class="o">.</span><span class="n">GUI</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span>
 </span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>
-</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a><span class="sd">    Attributes:</span>
-</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a><span class="sd">        active (bool): Flag indicating if the tool is currently selected.</span>
-</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a><span class="sd">        drawing (bool): Flag indicating if the tool is drawing pixels on the canvas.</span>
-</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a><span class="sd">        previous_pos (tuple): The previous mouse cursor position.</span>
-</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>        <span class="c1"># This tool is currently selected</span>
-</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>
-</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>        <span class="c1"># Should currently be drawing pixels onto canvas</span>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">drawing</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a><span class="n">fill_color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>
+</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a><span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">fill_color</span><span class="p">,</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">))</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>
+</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a><span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">flip</span><span class="p">()</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>
+</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a><span class="n">tool</span> <span class="o">=</span> <span class="n">Tools</span><span class="o">.</span><span class="n">Tool</span><span class="p">()</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a><span class="n">tool</span><span class="o">.</span><span class="n">__update_Tool__</span><span class="p">(</span><span class="n">main_gui</span><span class="o">.</span><span class="n">get_selected_tool</span><span class="p">())</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a><span class="n">shortcut</span> <span class="o">=</span> <span class="n">undo_redo</span><span class="o">.</span><span class="n">shortcut</span><span class="p">(</span><span class="n">myCanvas</span><span class="p">)</span>
 </span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>
-</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>        <span class="c1"># Some previous coords so the mouse actually draws lines</span>
-</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">previous_pos</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>
-</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>
-</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>    <span class="k">def</span> <span class="nf">_mouse_down_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>        <span class="c1"># Internal method for handling mouse down</span>
-</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">previous_pos</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">get_pos</span><span class="p">()</span>
-</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">drawing</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>
-</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>    <span class="k">def</span> <span class="nf">_mouse_up_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
-</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>        <span class="c1"># Internal method for handling mouse up</span>
-</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">previous_pos</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">get_pos</span><span class="p">()</span>
-</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">drawing</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a><span class="n">image_handler</span> <span class="o">=</span> <span class="n">ImageHandler</span><span class="p">(</span><span class="n">myCanvas</span><span class="p">)</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a><span class="k">while</span> <span class="n">run_program</span><span class="p">:</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>    <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">pygame</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">():</span>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">QUIT</span><span class="p">:</span>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>            <span class="n">pygame</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>            <span class="n">shortcut</span><span class="o">.</span><span class="n">clearTemp</span><span class="p">()</span>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>            <span class="n">run_program</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>            <span class="k">break</span>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">MOUSEBUTTONDOWN</span><span class="p">:</span>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>            <span class="n">tool</span><span class="o">.</span><span class="n">_mouse_down_</span><span class="p">(</span><span class="n">myCanvas</span><span class="p">)</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>            <span class="n">shortcut</span><span class="o">.</span><span class="n">check_if_viable</span><span class="p">(</span><span class="n">main_gui</span><span class="o">.</span><span class="n">get_selected_tool</span><span class="p">())</span>
 </span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>
-</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>    <span class="k">def</span> <span class="nf">_tick_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas_obj</span><span class="p">):</span>
-</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>        <span class="c1"># Internal method for updating the pencil tool</span>
-</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">drawing</span><span class="p">:</span>
-</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>            <span class="n">current_pos</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">get_pos</span><span class="p">()</span>
-</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>            <span class="n">color</span> <span class="o">=</span> <span class="n">main_gui</span><span class="o">.</span><span class="n">__get_selected_color__</span><span class="p">()</span>
-</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>            <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">canvas_obj</span><span class="o">.</span><span class="n">surface</span><span class="p">,</span><span class="n">color</span><span class="p">,</span> <span class="n">current_pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">previous_pos</span><span class="p">)</span>
-</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">previous_pos</span> <span class="o">=</span> <span class="n">current_pos</span>
-</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>            <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">flip</span><span class="p">()</span>
-</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>
-</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>
-</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>
-</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>
-</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>
-</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>
-</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a><span class="n">pencil_tool</span> <span class="o">=</span> <span class="n">Pencil</span><span class="p">()</span>
-</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>
-</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a>
-</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a><span class="k">while</span> <span class="n">run_program</span><span class="p">:</span>
-</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>
-</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>
-</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a>    <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">pygame</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">():</span>
-</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a>
-</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a>        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">QUIT</span><span class="p">:</span>
-</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a>            <span class="n">pygame</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
-</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a>            <span class="n">run_program</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a>            <span class="k">break</span>
-</span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a>
-</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a>        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">MOUSEBUTTONDOWN</span><span class="p">:</span>
-</span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a>            <span class="n">pencil_tool</span><span class="o">.</span><span class="n">_mouse_down_</span><span class="p">()</span>
-</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a>        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">MOUSEBUTTONUP</span><span class="p">:</span>
-</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a>            <span class="n">pencil_tool</span><span class="o">.</span><span class="n">_mouse_up_</span><span class="p">()</span>
-</span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>
-</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">KEYDOWN</span><span class="p">:</span>
-</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a>            
-</span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a>            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">K_s</span><span class="p">:</span>
-</span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a>                <span class="n">pygame</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="s2">&quot;test_file.png&quot;</span><span class="p">)</span>
-</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a>            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">K_o</span><span class="p">:</span>
-</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a>                <span class="n">loaded_image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;test_file.png&quot;</span><span class="p">)</span>
-</span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a>                <span class="n">screen</span><span class="o">.</span><span class="n">fill</span><span class="p">((</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span>
-</span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a>                <span class="n">myCanvas</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">loaded_image</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-</span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a>                <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">flip</span><span class="p">()</span>
-</span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a>            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">K_ESCAPE</span><span class="p">:</span>
-</span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a>                <span class="n">pygame</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
-</span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a>                <span class="n">run_program</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a>                <span class="k">break</span>
-</span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a>
-</span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">run_program</span><span class="p">:</span>
-</span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a>        <span class="k">break</span>
-</span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a>    
-</span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a>    <span class="n">pencil_tool</span><span class="o">.</span><span class="n">_tick_</span><span class="p">(</span><span class="n">myCanvas</span><span class="p">)</span>
-</span><span id="L-156"><a href="#L-156"><span class="linenos">156</span></a>
-</span><span id="L-157"><a href="#L-157"><span class="linenos">157</span></a>    <span class="n">myCanvas</span><span class="o">.</span><span class="n">_draw_</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span>
-</span><span id="L-158"><a href="#L-158"><span class="linenos">158</span></a>
-</span><span id="L-159"><a href="#L-159"><span class="linenos">159</span></a>    <span class="n">main_gui</span><span class="o">.</span><span class="n">__draw__</span><span class="p">()</span>
-</span><span id="L-160"><a href="#L-160"><span class="linenos">160</span></a>
-</span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a>    <span class="k">pass</span> 
-</span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a>
-</span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a>    <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">flip</span><span class="p">()</span>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">MOUSEBUTTONUP</span><span class="p">:</span>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>            <span class="n">tool</span><span class="o">.</span><span class="n">_mouse_up_</span><span class="p">(</span><span class="n">myCanvas</span><span class="p">)</span>
+</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>            <span class="n">shortcut</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">myCanvas</span><span class="p">)</span>
+</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>
+</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">MOUSEWHEEL</span><span class="p">:</span>
+</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>            <span class="n">tool</span><span class="o">.</span><span class="n">_mouse_scroll_</span><span class="p">(</span><span class="n">myCanvas</span><span class="p">,</span><span class="n">event</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>
+</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">KEYDOWN</span><span class="p">:</span>
+</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>            
+</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">K_s</span><span class="p">:</span>
+</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>                 <span class="n">image_handler</span><span class="o">.</span><span class="n">save_image</span><span class="p">()</span>
+</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>                 
+</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">K_o</span><span class="p">:</span>
+</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>                <span class="n">image_handler</span><span class="o">.</span><span class="n">load_image</span><span class="p">()</span>
+</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>
+</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">K_z</span> <span class="ow">and</span> <span class="p">(</span><span class="n">pygame</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">get_mods</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">pygame</span><span class="o">.</span><span class="n">KMOD_LCTRL</span><span class="p">):</span>
+</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a>                <span class="n">shortcut</span><span class="o">.</span><span class="n">undo</span><span class="p">(</span><span class="n">myCanvas</span><span class="p">)</span>
+</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">K_y</span> <span class="ow">and</span> <span class="p">(</span><span class="n">pygame</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">get_mods</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">pygame</span><span class="o">.</span><span class="n">KMOD_LCTRL</span><span class="p">):</span>
+</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>                <span class="n">shortcut</span><span class="o">.</span><span class="n">redo</span><span class="p">(</span><span class="n">myCanvas</span><span class="p">)</span>
+</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>                
+</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a>            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">K_ESCAPE</span><span class="p">:</span>
+</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a>                <span class="n">pygame</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a>                <span class="n">shortcut</span><span class="o">.</span><span class="n">clearTemp</span><span class="p">()</span>
+</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a>                <span class="n">run_program</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a>                <span class="k">break</span>
+</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a>
+</span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">run_program</span><span class="p">:</span>
+</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a>        <span class="k">break</span>
+</span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a>
+</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a>    <span class="n">tool</span><span class="o">.</span><span class="n">_tick_</span><span class="p">(</span><span class="n">myCanvas</span><span class="p">,</span><span class="n">main_gui</span><span class="o">.</span><span class="n">get_selected_color</span><span class="p">(),</span><span class="n">main_gui</span><span class="p">)</span>
+</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a>
+</span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>    <span class="n">myCanvas</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span>
+</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>
+</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a>    <span class="n">main_gui</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a>
+</span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a>    <span class="n">tool</span><span class="o">.</span><span class="n">__update_Tool__</span><span class="p">(</span><span class="n">main_gui</span><span class="o">.</span><span class="n">get_selected_tool</span><span class="p">())</span>
+</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a>    <span class="k">pass</span>
+</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a>
+</span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a>    <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">flip</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -357,49 +320,65 @@ main    </h1>
 
     </div>
     <a class="headerlink" href="#Canvas"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Canvas-14"><a href="#Canvas-14"><span class="linenos">14</span></a><span class="k">class</span> <span class="nc">Canvas</span><span class="p">:</span>
-</span><span id="Canvas-15"><a href="#Canvas-15"><span class="linenos">15</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A class representing a drawing canvas</span>
-</span><span id="Canvas-16"><a href="#Canvas-16"><span class="linenos">16</span></a>
-</span><span id="Canvas-17"><a href="#Canvas-17"><span class="linenos">17</span></a><span class="sd">    Attributes:</span>
-</span><span id="Canvas-18"><a href="#Canvas-18"><span class="linenos">18</span></a><span class="sd">        width (int): The width of the canvas.</span>
-</span><span id="Canvas-19"><a href="#Canvas-19"><span class="linenos">19</span></a><span class="sd">        height (int): The height of the canvas.</span>
-</span><span id="Canvas-20"><a href="#Canvas-20"><span class="linenos">20</span></a><span class="sd">        surface (pygame.Surface): The drawing surface.</span>
-</span><span id="Canvas-21"><a href="#Canvas-21"><span class="linenos">21</span></a><span class="sd">        x_offset (int): The X-axis offset for the canvas.</span>
-</span><span id="Canvas-22"><a href="#Canvas-22"><span class="linenos">22</span></a><span class="sd">        y_offset (int): The Y-axis offset for the canvas.</span>
-</span><span id="Canvas-23"><a href="#Canvas-23"><span class="linenos">23</span></a><span class="sd">        undrawn (bool): A flag indicating if the canvas needs to be redrawn.</span>
-</span><span id="Canvas-24"><a href="#Canvas-24"><span class="linenos">24</span></a><span class="sd">        scale (float): The scaling factor for the canvas.</span>
-</span><span id="Canvas-25"><a href="#Canvas-25"><span class="linenos">25</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="Canvas-26"><a href="#Canvas-26"><span class="linenos">26</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="mi">512</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="mi">512</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Canvas-27"><a href="#Canvas-27"><span class="linenos">27</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Canvas-28"><a href="#Canvas-28"><span class="linenos">28</span></a><span class="sd">        Initialize a new Canvas.</span>
-</span><span id="Canvas-29"><a href="#Canvas-29"><span class="linenos">29</span></a>
-</span><span id="Canvas-30"><a href="#Canvas-30"><span class="linenos">30</span></a><span class="sd">        Args:</span>
-</span><span id="Canvas-31"><a href="#Canvas-31"><span class="linenos">31</span></a><span class="sd">            width (int): The width of the canvas.</span>
-</span><span id="Canvas-32"><a href="#Canvas-32"><span class="linenos">32</span></a><span class="sd">            height (int): The height of the canvas.</span>
-</span><span id="Canvas-33"><a href="#Canvas-33"><span class="linenos">33</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Canvas-34"><a href="#Canvas-34"><span class="linenos">34</span></a>        
-</span><span id="Canvas-35"><a href="#Canvas-35"><span class="linenos">35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
-</span><span id="Canvas-36"><a href="#Canvas-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">height</span>
-</span><span id="Canvas-37"><a href="#Canvas-37"><span class="linenos">37</span></a>        
-</span><span id="Canvas-38"><a href="#Canvas-38"><span class="linenos">38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">surface</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">((</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span>
-</span><span id="Canvas-39"><a href="#Canvas-39"><span class="linenos">39</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">fill</span><span class="p">((</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">))</span> <span class="c1"># test function</span>
-</span><span id="Canvas-40"><a href="#Canvas-40"><span class="linenos">40</span></a>        
-</span><span id="Canvas-41"><a href="#Canvas-41"><span class="linenos">41</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">x_offset</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="Canvas-42"><a href="#Canvas-42"><span class="linenos">42</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">y_offset</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="Canvas-43"><a href="#Canvas-43"><span class="linenos">43</span></a>        
-</span><span id="Canvas-44"><a href="#Canvas-44"><span class="linenos">44</span></a>        <span class="c1"># if this is true, then the canvas and thus the display needs to be redrawn</span>
-</span><span id="Canvas-45"><a href="#Canvas-45"><span class="linenos">45</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">undrawn</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="Canvas-46"><a href="#Canvas-46"><span class="linenos">46</span></a>        
-</span><span id="Canvas-47"><a href="#Canvas-47"><span class="linenos">47</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="mi">1</span>
-</span><span id="Canvas-48"><a href="#Canvas-48"><span class="linenos">48</span></a>
-</span><span id="Canvas-49"><a href="#Canvas-49"><span class="linenos">49</span></a>    <span class="k">def</span> <span class="nf">_draw_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window_screen</span><span class="p">):</span>
-</span><span id="Canvas-50"><a href="#Canvas-50"><span class="linenos">50</span></a>        <span class="c1"># Internal method for drawing the canvas</span>
-</span><span id="Canvas-51"><a href="#Canvas-51"><span class="linenos">51</span></a>        <span class="n">surf_display</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">))</span>
-</span><span id="Canvas-52"><a href="#Canvas-52"><span class="linenos">52</span></a>        <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">window_screen</span><span class="p">,</span> <span class="n">surf_display</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_offset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_offset</span><span class="p">))</span>
-</span><span id="Canvas-53"><a href="#Canvas-53"><span class="linenos">53</span></a>
-</span><span id="Canvas-54"><a href="#Canvas-54"><span class="linenos">54</span></a>    <span class="k">def</span> <span class="nf">_tick_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Canvas-55"><a href="#Canvas-55"><span class="linenos">55</span></a>        <span class="c1"># Internal method for updating the canvas</span>
-</span><span id="Canvas-56"><a href="#Canvas-56"><span class="linenos">56</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">*=</span> <span class="mf">0.95</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Canvas-16"><a href="#Canvas-16"><span class="linenos">16</span></a><span class="k">class</span> <span class="nc">Canvas</span><span class="p">:</span>
+</span><span id="Canvas-17"><a href="#Canvas-17"><span class="linenos">17</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A class representing a drawing canvas</span>
+</span><span id="Canvas-18"><a href="#Canvas-18"><span class="linenos">18</span></a>
+</span><span id="Canvas-19"><a href="#Canvas-19"><span class="linenos">19</span></a><span class="sd">    Attributes:</span>
+</span><span id="Canvas-20"><a href="#Canvas-20"><span class="linenos">20</span></a><span class="sd">        width (int): The width of the canvas.</span>
+</span><span id="Canvas-21"><a href="#Canvas-21"><span class="linenos">21</span></a><span class="sd">        height (int): The height of the canvas.</span>
+</span><span id="Canvas-22"><a href="#Canvas-22"><span class="linenos">22</span></a><span class="sd">        surface (pygame.Surface): The drawing surface.</span>
+</span><span id="Canvas-23"><a href="#Canvas-23"><span class="linenos">23</span></a><span class="sd">        x_offset (int): The X-axis offset for the canvas.</span>
+</span><span id="Canvas-24"><a href="#Canvas-24"><span class="linenos">24</span></a><span class="sd">        y_offset (int): The Y-axis offset for the canvas.</span>
+</span><span id="Canvas-25"><a href="#Canvas-25"><span class="linenos">25</span></a><span class="sd">        undrawn (bool): A flag indicating if the canvas needs to be redrawn.</span>
+</span><span id="Canvas-26"><a href="#Canvas-26"><span class="linenos">26</span></a><span class="sd">        scale (float): The scaling factor for the canvas.</span>
+</span><span id="Canvas-27"><a href="#Canvas-27"><span class="linenos">27</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="Canvas-28"><a href="#Canvas-28"><span class="linenos">28</span></a>
+</span><span id="Canvas-29"><a href="#Canvas-29"><span class="linenos">29</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">512</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Canvas-30"><a href="#Canvas-30"><span class="linenos">30</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Canvas-31"><a href="#Canvas-31"><span class="linenos">31</span></a><span class="sd">        Initialize a new Canvas.</span>
+</span><span id="Canvas-32"><a href="#Canvas-32"><span class="linenos">32</span></a>
+</span><span id="Canvas-33"><a href="#Canvas-33"><span class="linenos">33</span></a><span class="sd">        Args:</span>
+</span><span id="Canvas-34"><a href="#Canvas-34"><span class="linenos">34</span></a><span class="sd">            width (int): The width of the canvas.</span>
+</span><span id="Canvas-35"><a href="#Canvas-35"><span class="linenos">35</span></a><span class="sd">            height (int): The height of the canvas.</span>
+</span><span id="Canvas-36"><a href="#Canvas-36"><span class="linenos">36</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Canvas-37"><a href="#Canvas-37"><span class="linenos">37</span></a>
+</span><span id="Canvas-38"><a href="#Canvas-38"><span class="linenos">38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
+</span><span id="Canvas-39"><a href="#Canvas-39"><span class="linenos">39</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">height</span>
+</span><span id="Canvas-40"><a href="#Canvas-40"><span class="linenos">40</span></a>
+</span><span id="Canvas-41"><a href="#Canvas-41"><span class="linenos">41</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">surface</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">((</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span>
+</span><span id="Canvas-42"><a href="#Canvas-42"><span class="linenos">42</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">fill</span><span class="p">((</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span>  <span class="c1"># test function</span>
+</span><span id="Canvas-43"><a href="#Canvas-43"><span class="linenos">43</span></a>
+</span><span id="Canvas-44"><a href="#Canvas-44"><span class="linenos">44</span></a>
+</span><span id="Canvas-45"><a href="#Canvas-45"><span class="linenos">45</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="Canvas-46"><a href="#Canvas-46"><span class="linenos">46</span></a>
+</span><span id="Canvas-47"><a href="#Canvas-47"><span class="linenos">47</span></a>        <span class="c1"># if this is true, then the canvas and thus the display needs to be redrawn</span>
+</span><span id="Canvas-48"><a href="#Canvas-48"><span class="linenos">48</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">undrawn</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="Canvas-49"><a href="#Canvas-49"><span class="linenos">49</span></a>        
+</span><span id="Canvas-50"><a href="#Canvas-50"><span class="linenos">50</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span id="Canvas-51"><a href="#Canvas-51"><span class="linenos">51</span></a>
+</span><span id="Canvas-52"><a href="#Canvas-52"><span class="linenos">52</span></a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window_screen</span><span class="p">):</span>
+</span><span id="Canvas-53"><a href="#Canvas-53"><span class="linenos">53</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Canvas-54"><a href="#Canvas-54"><span class="linenos">54</span></a><span class="sd">        Draws the canvas on the provided screen.</span>
+</span><span id="Canvas-55"><a href="#Canvas-55"><span class="linenos">55</span></a>
+</span><span id="Canvas-56"><a href="#Canvas-56"><span class="linenos">56</span></a><span class="sd">        This method first fills the entire screen with a gray color. Then, it scales the surface of the canvas </span>
+</span><span id="Canvas-57"><a href="#Canvas-57"><span class="linenos">57</span></a><span class="sd">        according to the current scale factor and blits it onto the provided screen at the current offset.</span>
+</span><span id="Canvas-58"><a href="#Canvas-58"><span class="linenos">58</span></a>
+</span><span id="Canvas-59"><a href="#Canvas-59"><span class="linenos">59</span></a><span class="sd">        Args:</span>
+</span><span id="Canvas-60"><a href="#Canvas-60"><span class="linenos">60</span></a><span class="sd">            window_screen (pygame.Surface): The Pygame screen surface on which the canvas will be drawn.</span>
+</span><span id="Canvas-61"><a href="#Canvas-61"><span class="linenos">61</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Canvas-62"><a href="#Canvas-62"><span class="linenos">62</span></a>        
+</span><span id="Canvas-63"><a href="#Canvas-63"><span class="linenos">63</span></a>        <span class="n">fill_color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">127</span><span class="p">,</span> <span class="mi">127</span><span class="p">,</span> <span class="mi">127</span><span class="p">)</span>
+</span><span id="Canvas-64"><a href="#Canvas-64"><span class="linenos">64</span></a>        <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">fill_color</span><span class="p">,</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">))</span>
+</span><span id="Canvas-65"><a href="#Canvas-65"><span class="linenos">65</span></a>        
+</span><span id="Canvas-66"><a href="#Canvas-66"><span class="linenos">66</span></a>        <span class="n">surf_display</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span>
+</span><span id="Canvas-67"><a href="#Canvas-67"><span class="linenos">67</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span>
+</span><span id="Canvas-68"><a href="#Canvas-68"><span class="linenos">68</span></a>        <span class="p">)</span>
+</span><span id="Canvas-69"><a href="#Canvas-69"><span class="linenos">69</span></a>        <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">window_screen</span><span class="p">,</span> <span class="n">surf_display</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">)</span>
+</span><span id="Canvas-70"><a href="#Canvas-70"><span class="linenos">70</span></a>
+</span><span id="Canvas-71"><a href="#Canvas-71"><span class="linenos">71</span></a>    <span class="c1"># def _tick_(self):</span>
+</span><span id="Canvas-72"><a href="#Canvas-72"><span class="linenos">72</span></a>    <span class="c1">#     # Internal method for updating the canvas</span>
+</span><span id="Canvas-73"><a href="#Canvas-73"><span class="linenos">73</span></a>    <span class="c1">#     # self.scale *= 0.95</span>
+</span><span id="Canvas-74"><a href="#Canvas-74"><span class="linenos">74</span></a>    <span class="c1">#     pass</span>
 </span></pre></div>
 
 
@@ -426,28 +405,28 @@ main    </h1>
 
     </div>
     <a class="headerlink" href="#Canvas.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Canvas.__init__-26"><a href="#Canvas.__init__-26"><span class="linenos">26</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="mi">512</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="mi">512</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Canvas.__init__-27"><a href="#Canvas.__init__-27"><span class="linenos">27</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="Canvas.__init__-28"><a href="#Canvas.__init__-28"><span class="linenos">28</span></a><span class="sd">        Initialize a new Canvas.</span>
-</span><span id="Canvas.__init__-29"><a href="#Canvas.__init__-29"><span class="linenos">29</span></a>
-</span><span id="Canvas.__init__-30"><a href="#Canvas.__init__-30"><span class="linenos">30</span></a><span class="sd">        Args:</span>
-</span><span id="Canvas.__init__-31"><a href="#Canvas.__init__-31"><span class="linenos">31</span></a><span class="sd">            width (int): The width of the canvas.</span>
-</span><span id="Canvas.__init__-32"><a href="#Canvas.__init__-32"><span class="linenos">32</span></a><span class="sd">            height (int): The height of the canvas.</span>
-</span><span id="Canvas.__init__-33"><a href="#Canvas.__init__-33"><span class="linenos">33</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Canvas.__init__-34"><a href="#Canvas.__init__-34"><span class="linenos">34</span></a>        
-</span><span id="Canvas.__init__-35"><a href="#Canvas.__init__-35"><span class="linenos">35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
-</span><span id="Canvas.__init__-36"><a href="#Canvas.__init__-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">height</span>
-</span><span id="Canvas.__init__-37"><a href="#Canvas.__init__-37"><span class="linenos">37</span></a>        
-</span><span id="Canvas.__init__-38"><a href="#Canvas.__init__-38"><span class="linenos">38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">surface</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">((</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span>
-</span><span id="Canvas.__init__-39"><a href="#Canvas.__init__-39"><span class="linenos">39</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">fill</span><span class="p">((</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">))</span> <span class="c1"># test function</span>
-</span><span id="Canvas.__init__-40"><a href="#Canvas.__init__-40"><span class="linenos">40</span></a>        
-</span><span id="Canvas.__init__-41"><a href="#Canvas.__init__-41"><span class="linenos">41</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">x_offset</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="Canvas.__init__-42"><a href="#Canvas.__init__-42"><span class="linenos">42</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">y_offset</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="Canvas.__init__-43"><a href="#Canvas.__init__-43"><span class="linenos">43</span></a>        
-</span><span id="Canvas.__init__-44"><a href="#Canvas.__init__-44"><span class="linenos">44</span></a>        <span class="c1"># if this is true, then the canvas and thus the display needs to be redrawn</span>
-</span><span id="Canvas.__init__-45"><a href="#Canvas.__init__-45"><span class="linenos">45</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">undrawn</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="Canvas.__init__-46"><a href="#Canvas.__init__-46"><span class="linenos">46</span></a>        
-</span><span id="Canvas.__init__-47"><a href="#Canvas.__init__-47"><span class="linenos">47</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="mi">1</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Canvas.__init__-29"><a href="#Canvas.__init__-29"><span class="linenos">29</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">512</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Canvas.__init__-30"><a href="#Canvas.__init__-30"><span class="linenos">30</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Canvas.__init__-31"><a href="#Canvas.__init__-31"><span class="linenos">31</span></a><span class="sd">        Initialize a new Canvas.</span>
+</span><span id="Canvas.__init__-32"><a href="#Canvas.__init__-32"><span class="linenos">32</span></a>
+</span><span id="Canvas.__init__-33"><a href="#Canvas.__init__-33"><span class="linenos">33</span></a><span class="sd">        Args:</span>
+</span><span id="Canvas.__init__-34"><a href="#Canvas.__init__-34"><span class="linenos">34</span></a><span class="sd">            width (int): The width of the canvas.</span>
+</span><span id="Canvas.__init__-35"><a href="#Canvas.__init__-35"><span class="linenos">35</span></a><span class="sd">            height (int): The height of the canvas.</span>
+</span><span id="Canvas.__init__-36"><a href="#Canvas.__init__-36"><span class="linenos">36</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Canvas.__init__-37"><a href="#Canvas.__init__-37"><span class="linenos">37</span></a>
+</span><span id="Canvas.__init__-38"><a href="#Canvas.__init__-38"><span class="linenos">38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
+</span><span id="Canvas.__init__-39"><a href="#Canvas.__init__-39"><span class="linenos">39</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">height</span>
+</span><span id="Canvas.__init__-40"><a href="#Canvas.__init__-40"><span class="linenos">40</span></a>
+</span><span id="Canvas.__init__-41"><a href="#Canvas.__init__-41"><span class="linenos">41</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">surface</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">((</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span>
+</span><span id="Canvas.__init__-42"><a href="#Canvas.__init__-42"><span class="linenos">42</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">fill</span><span class="p">((</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span>  <span class="c1"># test function</span>
+</span><span id="Canvas.__init__-43"><a href="#Canvas.__init__-43"><span class="linenos">43</span></a>
+</span><span id="Canvas.__init__-44"><a href="#Canvas.__init__-44"><span class="linenos">44</span></a>
+</span><span id="Canvas.__init__-45"><a href="#Canvas.__init__-45"><span class="linenos">45</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="Canvas.__init__-46"><a href="#Canvas.__init__-46"><span class="linenos">46</span></a>
+</span><span id="Canvas.__init__-47"><a href="#Canvas.__init__-47"><span class="linenos">47</span></a>        <span class="c1"># if this is true, then the canvas and thus the display needs to be redrawn</span>
+</span><span id="Canvas.__init__-48"><a href="#Canvas.__init__-48"><span class="linenos">48</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">undrawn</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="Canvas.__init__-49"><a href="#Canvas.__init__-49"><span class="linenos">49</span></a>        
+</span><span id="Canvas.__init__-50"><a href="#Canvas.__init__-50"><span class="linenos">50</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="mi">1</span>
 </span></pre></div>
 
 
@@ -493,24 +472,13 @@ main    </h1>
     
 
                             </div>
-                            <div id="Canvas.x_offset" class="classattr">
+                            <div id="Canvas.offset" class="classattr">
                                 <div class="attr variable">
-            <span class="name">x_offset</span>
+            <span class="name">offset</span>
 
         
     </div>
-    <a class="headerlink" href="#Canvas.x_offset"></a>
-    
-    
-
-                            </div>
-                            <div id="Canvas.y_offset" class="classattr">
-                                <div class="attr variable">
-            <span class="name">y_offset</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Canvas.y_offset"></a>
+    <a class="headerlink" href="#Canvas.offset"></a>
     
     
 
@@ -535,6 +503,49 @@ main    </h1>
     <a class="headerlink" href="#Canvas.scale"></a>
     
     
+
+                            </div>
+                            <div id="Canvas.draw" class="classattr">
+                                        <input id="Canvas.draw-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">draw</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">window_screen</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Canvas.draw-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Canvas.draw"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Canvas.draw-52"><a href="#Canvas.draw-52"><span class="linenos">52</span></a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window_screen</span><span class="p">):</span>
+</span><span id="Canvas.draw-53"><a href="#Canvas.draw-53"><span class="linenos">53</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Canvas.draw-54"><a href="#Canvas.draw-54"><span class="linenos">54</span></a><span class="sd">        Draws the canvas on the provided screen.</span>
+</span><span id="Canvas.draw-55"><a href="#Canvas.draw-55"><span class="linenos">55</span></a>
+</span><span id="Canvas.draw-56"><a href="#Canvas.draw-56"><span class="linenos">56</span></a><span class="sd">        This method first fills the entire screen with a gray color. Then, it scales the surface of the canvas </span>
+</span><span id="Canvas.draw-57"><a href="#Canvas.draw-57"><span class="linenos">57</span></a><span class="sd">        according to the current scale factor and blits it onto the provided screen at the current offset.</span>
+</span><span id="Canvas.draw-58"><a href="#Canvas.draw-58"><span class="linenos">58</span></a>
+</span><span id="Canvas.draw-59"><a href="#Canvas.draw-59"><span class="linenos">59</span></a><span class="sd">        Args:</span>
+</span><span id="Canvas.draw-60"><a href="#Canvas.draw-60"><span class="linenos">60</span></a><span class="sd">            window_screen (pygame.Surface): The Pygame screen surface on which the canvas will be drawn.</span>
+</span><span id="Canvas.draw-61"><a href="#Canvas.draw-61"><span class="linenos">61</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Canvas.draw-62"><a href="#Canvas.draw-62"><span class="linenos">62</span></a>        
+</span><span id="Canvas.draw-63"><a href="#Canvas.draw-63"><span class="linenos">63</span></a>        <span class="n">fill_color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">127</span><span class="p">,</span> <span class="mi">127</span><span class="p">,</span> <span class="mi">127</span><span class="p">)</span>
+</span><span id="Canvas.draw-64"><a href="#Canvas.draw-64"><span class="linenos">64</span></a>        <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="n">fill_color</span><span class="p">,</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">))</span>
+</span><span id="Canvas.draw-65"><a href="#Canvas.draw-65"><span class="linenos">65</span></a>        
+</span><span id="Canvas.draw-66"><a href="#Canvas.draw-66"><span class="linenos">66</span></a>        <span class="n">surf_display</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span>
+</span><span id="Canvas.draw-67"><a href="#Canvas.draw-67"><span class="linenos">67</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span>
+</span><span id="Canvas.draw-68"><a href="#Canvas.draw-68"><span class="linenos">68</span></a>        <span class="p">)</span>
+</span><span id="Canvas.draw-69"><a href="#Canvas.draw-69"><span class="linenos">69</span></a>        <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">window_screen</span><span class="p">,</span> <span class="n">surf_display</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Draws the canvas on the provided screen.</p>
+
+<p>This method first fills the entire screen with a gray color. Then, it scales the surface of the canvas 
+according to the current scale factor and blits it onto the provided screen at the current offset.</p>
+
+<p>Args:
+    window_screen (pygame.Surface): The Pygame screen surface on which the canvas will be drawn.</p>
+</div>
+
 
                             </div>
                 </section>
@@ -562,42 +573,6 @@ main    </h1>
     
 
                 </section>
-                <section id="r_range">
-                    <div class="attr variable">
-            <span class="name">r_range</span>        =
-<span class="default_value">175</span>
-
-        
-    </div>
-    <a class="headerlink" href="#r_range"></a>
-    
-    
-
-                </section>
-                <section id="g_range">
-                    <div class="attr variable">
-            <span class="name">g_range</span>        =
-<span class="default_value">46</span>
-
-        
-    </div>
-    <a class="headerlink" href="#g_range"></a>
-    
-    
-
-                </section>
-                <section id="b_range">
-                    <div class="attr variable">
-            <span class="name">b_range</span>        =
-<span class="default_value">45</span>
-
-        
-    </div>
-    <a class="headerlink" href="#b_range"></a>
-    
-    
-
-                </section>
                 <section id="fill_color">
                     <div class="attr variable">
             <span class="name">fill_color</span>        =
@@ -610,108 +585,38 @@ main    </h1>
     
 
                 </section>
-                <section id="Pencil">
-                            <input id="Pencil-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr class">
-            
-    <span class="def">class</span>
-    <span class="name">Pencil</span>:
-
-                <label class="view-source-button" for="Pencil-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#Pencil"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Pencil-79"><a href="#Pencil-79"><span class="linenos"> 79</span></a><span class="k">class</span> <span class="nc">Pencil</span><span class="p">():</span>
-</span><span id="Pencil-80"><a href="#Pencil-80"><span class="linenos"> 80</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A class representing a pencil tool for drawing on the canvas.</span>
-</span><span id="Pencil-81"><a href="#Pencil-81"><span class="linenos"> 81</span></a>
-</span><span id="Pencil-82"><a href="#Pencil-82"><span class="linenos"> 82</span></a><span class="sd">    Attributes:</span>
-</span><span id="Pencil-83"><a href="#Pencil-83"><span class="linenos"> 83</span></a><span class="sd">        active (bool): Flag indicating if the tool is currently selected.</span>
-</span><span id="Pencil-84"><a href="#Pencil-84"><span class="linenos"> 84</span></a><span class="sd">        drawing (bool): Flag indicating if the tool is drawing pixels on the canvas.</span>
-</span><span id="Pencil-85"><a href="#Pencil-85"><span class="linenos"> 85</span></a><span class="sd">        previous_pos (tuple): The previous mouse cursor position.</span>
-</span><span id="Pencil-86"><a href="#Pencil-86"><span class="linenos"> 86</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="Pencil-87"><a href="#Pencil-87"><span class="linenos"> 87</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Pencil-88"><a href="#Pencil-88"><span class="linenos"> 88</span></a>        <span class="c1"># This tool is currently selected</span>
-</span><span id="Pencil-89"><a href="#Pencil-89"><span class="linenos"> 89</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="Pencil-90"><a href="#Pencil-90"><span class="linenos"> 90</span></a>
-</span><span id="Pencil-91"><a href="#Pencil-91"><span class="linenos"> 91</span></a>        <span class="c1"># Should currently be drawing pixels onto canvas</span>
-</span><span id="Pencil-92"><a href="#Pencil-92"><span class="linenos"> 92</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">drawing</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="Pencil-93"><a href="#Pencil-93"><span class="linenos"> 93</span></a>
-</span><span id="Pencil-94"><a href="#Pencil-94"><span class="linenos"> 94</span></a>        <span class="c1"># Some previous coords so the mouse actually draws lines</span>
-</span><span id="Pencil-95"><a href="#Pencil-95"><span class="linenos"> 95</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">previous_pos</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-</span><span id="Pencil-96"><a href="#Pencil-96"><span class="linenos"> 96</span></a>
-</span><span id="Pencil-97"><a href="#Pencil-97"><span class="linenos"> 97</span></a>
-</span><span id="Pencil-98"><a href="#Pencil-98"><span class="linenos"> 98</span></a>    <span class="k">def</span> <span class="nf">_mouse_down_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Pencil-99"><a href="#Pencil-99"><span class="linenos"> 99</span></a>        <span class="c1"># Internal method for handling mouse down</span>
-</span><span id="Pencil-100"><a href="#Pencil-100"><span class="linenos">100</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">previous_pos</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">get_pos</span><span class="p">()</span>
-</span><span id="Pencil-101"><a href="#Pencil-101"><span class="linenos">101</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">drawing</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="Pencil-102"><a href="#Pencil-102"><span class="linenos">102</span></a>
-</span><span id="Pencil-103"><a href="#Pencil-103"><span class="linenos">103</span></a>    <span class="k">def</span> <span class="nf">_mouse_up_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
-</span><span id="Pencil-104"><a href="#Pencil-104"><span class="linenos">104</span></a>        <span class="c1"># Internal method for handling mouse up</span>
-</span><span id="Pencil-105"><a href="#Pencil-105"><span class="linenos">105</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">previous_pos</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">get_pos</span><span class="p">()</span>
-</span><span id="Pencil-106"><a href="#Pencil-106"><span class="linenos">106</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">drawing</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="Pencil-107"><a href="#Pencil-107"><span class="linenos">107</span></a>
-</span><span id="Pencil-108"><a href="#Pencil-108"><span class="linenos">108</span></a>    <span class="k">def</span> <span class="nf">_tick_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas_obj</span><span class="p">):</span>
-</span><span id="Pencil-109"><a href="#Pencil-109"><span class="linenos">109</span></a>        <span class="c1"># Internal method for updating the pencil tool</span>
-</span><span id="Pencil-110"><a href="#Pencil-110"><span class="linenos">110</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">drawing</span><span class="p">:</span>
-</span><span id="Pencil-111"><a href="#Pencil-111"><span class="linenos">111</span></a>            <span class="n">current_pos</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">get_pos</span><span class="p">()</span>
-</span><span id="Pencil-112"><a href="#Pencil-112"><span class="linenos">112</span></a>            <span class="n">color</span> <span class="o">=</span> <span class="n">main_gui</span><span class="o">.</span><span class="n">__get_selected_color__</span><span class="p">()</span>
-</span><span id="Pencil-113"><a href="#Pencil-113"><span class="linenos">113</span></a>            <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">canvas_obj</span><span class="o">.</span><span class="n">surface</span><span class="p">,</span><span class="n">color</span><span class="p">,</span> <span class="n">current_pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">previous_pos</span><span class="p">)</span>
-</span><span id="Pencil-114"><a href="#Pencil-114"><span class="linenos">114</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">previous_pos</span> <span class="o">=</span> <span class="n">current_pos</span>
-</span><span id="Pencil-115"><a href="#Pencil-115"><span class="linenos">115</span></a>            <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">flip</span><span class="p">()</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>A class representing a pencil tool for drawing on the canvas.</p>
-
-<p>Attributes:
-    active (bool): Flag indicating if the tool is currently selected.
-    drawing (bool): Flag indicating if the tool is drawing pixels on the canvas.
-    previous_pos (tuple): The previous mouse cursor position.</p>
-</div>
-
-
-                            <div id="Pencil.active" class="classattr">
-                                <div class="attr variable">
-            <span class="name">active</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Pencil.active"></a>
-    
-    
-
-                            </div>
-                            <div id="Pencil.drawing" class="classattr">
-                                <div class="attr variable">
-            <span class="name">drawing</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Pencil.drawing"></a>
-    
-    
-
-                            </div>
-                            <div id="Pencil.previous_pos" class="classattr">
-                                <div class="attr variable">
-            <span class="name">previous_pos</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Pencil.previous_pos"></a>
-    
-    
-
-                            </div>
-                </section>
-                <section id="pencil_tool">
+                <section id="tool">
                     <div class="attr variable">
-            <span class="name">pencil_tool</span>        =
-<span class="default_value">&lt;<a href="#Pencil">Pencil</a> object&gt;</span>
+            <span class="name">tool</span>        =
+<span class="default_value">&lt;<a href="Tools.html#Tool">Tools.Tool</a> object&gt;</span>
 
         
     </div>
-    <a class="headerlink" href="#pencil_tool"></a>
+    <a class="headerlink" href="#tool"></a>
+    
+    
+
+                </section>
+                <section id="shortcut">
+                    <div class="attr variable">
+            <span class="name">shortcut</span>        =
+<span class="default_value">&lt;<a href="#shortcut">shortcut</a> object&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#shortcut"></a>
+    
+    
+
+                </section>
+                <section id="image_handler">
+                    <div class="attr variable">
+            <span class="name">image_handler</span>        =
+<span class="default_value">&lt;<a href="image_handler.html#ImageHandler">image_handler.ImageHandler</a> object&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#image_handler"></a>
     
     
 
