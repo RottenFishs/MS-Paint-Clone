@@ -8,7 +8,7 @@ class ImageHandler:
     """
     A class that handles loading and saving images for the canvas.
 
-    This class provides methods to load an image from a file and 
+    This class provides methods to load an image from a file and
     draw it onto the canvas, and to save the current state of the
     canvas to an image file.
 
@@ -20,7 +20,7 @@ class ImageHandler:
         """
         Initialize the ImageHandler class.
 
-        This method sets up the ImageHandler class by storing a reference to the canvas 
+        This method sets up the ImageHandler class by storing a reference to the canvas
         that it will be working with.
 
         Args:
@@ -32,7 +32,7 @@ class ImageHandler:
         """
         Loads an image from a file and draws it onto the canvas.
 
-        This method opens a file dialog for the user to select an image file. 
+        This method opens a file dialog for the user to select an image file.
         If a file is selected, it loads the image and draws it onto the canvas.
 
         Args:
@@ -61,7 +61,7 @@ class ImageHandler:
         """
         Saves the current state of the canvas to an image file.
 
-        This method opens a file dialog for the user to select a location and 
+        This method opens a file dialog for the user to select a location and
         file name to save the current state of the canvas as an image file.
 
         Args:
