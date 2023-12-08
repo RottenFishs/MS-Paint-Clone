@@ -130,18 +130,14 @@ class GUI:
             if self.rect.collidepoint(position):
                 if (
                     mouse_is_pressed
-                    and self.clicked == False
                     and not self.mouse_was_pressed
                 ):
-                    self.clicked = True
                     self.state = True
                     GUI.ColorButton.STATIC_SELECTED = self.color
 
             if GUI.ColorButton.STATIC_SELECTED != self.color:
                 self.state = False
 
-            if not mouse_is_pressed:
-                self.clicked = False
 
             pygame.draw.rect(self.screen, self.color, self.rect)
             pygame.display.flip
