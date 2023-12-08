@@ -88,7 +88,7 @@ class GUI:
                 self.image = self.active_image
 
             self.screen.blit(self.image, (self.rect.x, self.rect.y))
-            pygame.display.flip
+            pygame.display.flip()
             self.mouse_was_pressed = mouse_is_pressed
 
         def _set_active_(self, is_active):
@@ -140,7 +140,7 @@ class GUI:
 
 
             pygame.draw.rect(self.screen, self.color, self.rect)
-            pygame.display.flip
+            pygame.display.flip()
             self.mouse_was_pressed = mouse_is_pressed
 
         def _set_color_to_selected_(self):
@@ -248,7 +248,7 @@ class GUI:
         self.pink = pink
         self.black = black
         self.selected_color = selected_color
-        pygame.display.flip
+        pygame.display.flip()
 
     def draw(self):
         """
@@ -287,7 +287,7 @@ class GUI:
         self.selected_color._set_color_to_selected_()
         self.selected_color._draw_()
 
-        pygame.display.flip
+        pygame.display.flip()
 
     def change_selected_color(self, new_color):
         """

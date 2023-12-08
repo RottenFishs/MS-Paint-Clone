@@ -142,6 +142,5 @@ while RUN_PROGRAM:
     main_gui.draw()
 
     tool.__update_Tool__(main_gui.get_selected_tool())
-    pass
 
     pygame.display.flip()
