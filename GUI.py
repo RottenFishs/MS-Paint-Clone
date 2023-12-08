@@ -13,10 +13,15 @@ class GUI:
         pencil (ToolButton): The pencil tool button.
         brush (ToolButton): The brush tool button.
         eyedropper (ToolButton): The eyedropper tool button.
+
         red (ColorButton): The red color button.
+        yellow (ColorButton): The yellow color button.
         green (ColorButton): The green color button.
+        teal (ColorButton): The teal color button.
         blue (ColorButton): The blue color button.
+        pink (ColorButton): The pink color button.
         black (ColorButton): The black color button.
+
         selected_color (ColorButton): The currently selected color button.
 
     """
@@ -226,16 +231,23 @@ class GUI:
         self.eyedroppper = eyedropper
 
         red = GUI.ColorButton(330, 20, (255, 0, 0), self.screen, 18, 18)
+        yellow = GUI.ColorButton(350, 20, (255, 255, 0), self.screen, 18, 18)
         green = GUI.ColorButton(370, 20, (0, 255, 0), self.screen, 18, 18)
+        teal = GUI.ColorButton(390, 20, (0, 255, 255), self.screen, 18, 18)
         blue = GUI.ColorButton(410, 20, (0, 0, 255), self.screen, 18, 18)
+        pink = GUI.ColorButton(430, 20, (255, 0, 255), self.screen, 18, 18)
         black = GUI.ColorButton(450, 20, (0, 0, 0), self.screen, 18, 18)
+
         selected_color = GUI.ColorButton(
             240, 13, GUI.ColorButton.STATIC_SELECTED, self.screen, 30, 30
         )
 
         self.red = red
+        self.yellow = yellow
         self.green = green
+        self.teal = teal
         self.blue = blue
+        self.pink = pink
         self.black = black
         self.selected_color = selected_color
         pygame.display.flip
@@ -267,9 +279,13 @@ class GUI:
         self.eyedroppper._draw_()
 
         self.red._draw_()
+        self.yellow._draw_()
         self.green._draw_()
+        self.teal._draw_()
         self.blue._draw_()
+        self.pink._draw_()
         self.black._draw_()
+
         self.selected_color._set_color_to_selected_()
         self.selected_color._draw_()
 

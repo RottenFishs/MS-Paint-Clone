@@ -28,6 +28,10 @@ class shortcut:
 
         self.check = False
         blank_file = "canvas_stack/temp_image{}.png".format(0)
+
+        if not os.path.exists("canvas_stack"):
+            os.makedirs("canvas_stack")
+
         pygame.image.save(canvas_obj.surface,blank_file)
 
         pass

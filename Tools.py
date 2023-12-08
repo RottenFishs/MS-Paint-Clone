@@ -396,9 +396,9 @@ class Tool():
 
         def _mouse_scroll_(self, canvas_obj, dir):
             # internal method for handling the mouse scrolling upwards
-            if dir == 1:
+            if dir == 1 and canvas_obj.scale < 5:
                 canvas_obj.scale *= 1.1
-            elif dir == -1:
+            elif dir == -1 and canvas_obj.scale > 0.2:
                 canvas_obj.scale *= 0.9
         
         def _tick_(self, canvas_obj,color,___):
