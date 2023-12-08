@@ -12,6 +12,7 @@ class ImageHandler:
     Attributes:
         canvas (Canvas): The canvas object that the ImageHandler will be working with.
     """
+
     def __init__(self, canvas):
         """
         Initialize the ImageHandler class.
@@ -68,8 +69,8 @@ class ImageHandler:
         root.withdraw()
         # Open save file dialog with limited file types
         file_path = filedialog.asksaveasfilename(
-            filetypes = [("PNG File", "*.png"), ("JPEG File", "*.jpg")],
-            defaultextension = ''
+            filetypes=[("PNG File", "*.png"), ("JPEG File", "*.jpg")],
+            defaultextension=''
         )
         # Save screenshot if a file/filepath is selected
         if file_path:

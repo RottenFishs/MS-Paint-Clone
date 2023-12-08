@@ -2,6 +2,7 @@ import pygame
 import os
 import glob
 
+
 class shortcut:
     """
     A class that handles undo and redo operations for the canvas.
@@ -14,7 +15,7 @@ class shortcut:
         check (bool): A flag indicating whether the current tool can make changes that should be tracked.
     """
 
-    def __init__(self,canvas_obj) -> None:
+    def __init__(self, canvas_obj) -> None:
         """
         Initialize the shortcut class.
 
@@ -32,11 +33,11 @@ class shortcut:
         if not os.path.exists("canvas_stack"):
             os.makedirs("canvas_stack")
 
-        pygame.image.save(canvas_obj.surface,blank_file)
+        pygame.image.save(canvas_obj.surface, blank_file)
 
         pass
 
-    def check_if_viable(self,current_tool):
+    def check_if_viable(self, current_tool):
         """
         Checks if the current tool can make changes that should be saved.
 
@@ -44,7 +45,7 @@ class shortcut:
         (pencil,brush,eraser,fill),
         if the mouse isn't on the GUI, and if the left mouse button was pressed.
 
-        If all the above is true, self.check is set to true, otherwise it is false 
+        If all the above is true, self.check is set to true, otherwise it is false
         Args:
             current_tool (str): The name of the current tool.
 
@@ -52,20 +53,20 @@ class shortcut:
             None
         """
         left_click = pygame.mouse.get_pressed()
-        viable_tools = ["pencil","brush", "eraser", "fill"]
-        if current_tool in viable_tools and pygame.mouse.get_pos()[1] > 50 and left_click[0]:
+        viable_tools = ["pencil", "brush", "eraser", "fill"]
+        if current_tool in viable_tools and pygame.mouse.get_pos()[
+                1] > 50 and left_click[0]:
             self.check = True
         else:
             self.check = False
 
-    
-    def save(self,canvas_obj):
+    def save(self, canvas_obj):
         """
         Saves the current state of the canvas into canvas_stack directory.
 
         This method saves the current state of the canvas into canvas_stack directory.
         If a change has been made that should be tracked/self.check is true.
-        
+
         It also deletes all images ahead of it, in the case of a user undoing and saving
 
         Args:
@@ -74,18 +75,18 @@ class shortcut:
         Returns:
             None
         """
-        if self.check == True:
-            self.counter += 1 
+        if self.check:
+            self.counter += 1
             image_file = "canvas_stack/temp_image{}.png".format(self.counter)
-            for i in range(self.counter+1,self.size):
+            for i in range(self.counter + 1, self.size):
                 delete_file = "canvas_stack/temp_image{}.png".format(i)
                 if os.path.exists(delete_file):
                     os.remove(delete_file)
 
-            self.size = self.counter+1
-            pygame.image.save(canvas_obj.surface,image_file)
-    
-    def undo(self,canvas_obj):
+            self.size = self.counter + 1
+            pygame.image.save(canvas_obj.surface, image_file)
+
+    def undo(self, canvas_obj):
         """
         Undoes the last change made to the canvas.
 
@@ -102,10 +103,10 @@ class shortcut:
             self.counter -= 1
             image_file = "canvas_stack/temp_image{}.png".format(self.counter)
             undo_image = pygame.image.load(image_file)
-            canvas_obj.surface.blit(undo_image,(0,0))
+            canvas_obj.surface.blit(undo_image, (0, 0))
             pygame.display.flip()
 
-    def redo(self,canvas_obj):
+    def redo(self, canvas_obj):
         """
         Redoes the last change that was undone.
 
@@ -118,11 +119,11 @@ class shortcut:
         Returns:
             None
         """
-        if self.counter < self.size-1:
-            self.counter +=1
+        if self.counter < self.size - 1:
+            self.counter += 1
             image_file = "canvas_stack/temp_image{}.png".format(self.counter)
             undo_image = pygame.image.load(image_file)
-            canvas_obj.surface.blit(undo_image,(0,0))
+            canvas_obj.surface.blit(undo_image, (0, 0))
             pygame.display.flip()
 
     def clearTemp(self):

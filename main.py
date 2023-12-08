@@ -40,28 +40,28 @@ class Canvas:
         self.surface = pygame.Surface((width, height))
         self.surface.fill((255, 255, 255))  # test function
 
-
         self.offset = (0, 0)
 
-        # if this is true, then the canvas and thus the display needs to be redrawn
+        # if this is true, then the canvas and thus the display needs to be
+        # redrawn
         self.undrawn = False
-        
+
         self.scale = 1
 
     def draw(self, window_screen):
         """
         Draws the canvas on the provided screen.
 
-        This method first fills the entire screen with a gray color. Then, it scales the surface of the canvas 
+        This method first fills the entire screen with a gray color. Then, it scales the surface of the canvas
         according to the current scale factor and blits it onto the provided screen at the current offset.
 
         Args:
             window_screen (pygame.Surface): The Pygame screen surface on which the canvas will be drawn.
         """
-        
+
         fill_color = (127, 127, 127)
         pygame.draw.rect(screen, fill_color, pygame.Rect(0, 0, 512, 512))
-        
+
         surf_display = pygame.transform.scale(
             self.surface, (self.width * self.scale, self.height * self.scale)
         )
@@ -108,21 +108,23 @@ while run_program:
             shortcut.save(myCanvas)
 
         elif event.type == pygame.MOUSEWHEEL:
-            tool._mouse_scroll_(myCanvas,event.y)
+            tool._mouse_scroll_(myCanvas, event.y)
 
         elif event.type == pygame.KEYDOWN:
-            
+
             if event.key == pygame.K_s:
-                 image_handler.save_image()
-                 
+                image_handler.save_image()
+
             if event.key == pygame.K_o:
                 image_handler.load_image()
 
-            if event.key == pygame.K_z and (pygame.key.get_mods() & pygame.KMOD_LCTRL):
+            if event.key == pygame.K_z and (
+                    pygame.key.get_mods() & pygame.KMOD_LCTRL):
                 shortcut.undo(myCanvas)
-            if event.key == pygame.K_y and (pygame.key.get_mods() & pygame.KMOD_LCTRL):
+            if event.key == pygame.K_y and (
+                    pygame.key.get_mods() & pygame.KMOD_LCTRL):
                 shortcut.redo(myCanvas)
-                
+
             if event.key == pygame.K_ESCAPE:
                 pygame.quit()
                 shortcut.clearTemp()
@@ -132,7 +134,7 @@ while run_program:
     if not run_program:
         break
 
-    tool._tick_(myCanvas,main_gui.get_selected_color(),main_gui)
+    tool._tick_(myCanvas, main_gui.get_selected_color(), main_gui)
 
     myCanvas.draw(screen)
 
