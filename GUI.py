@@ -1,4 +1,4 @@
-import pygame
+import pygame # pylint: disable=import-error
 
 
 class GUI:
@@ -61,7 +61,6 @@ class GUI:
             self.y = y
             self.rect.topleft = (x, y)
 
-
         def _draw_(self):
             # Internal method for drawing ToolButtons on the screen
             position = pygame.mouse.get_pos()
@@ -91,15 +90,14 @@ class GUI:
             pygame.display.flip
             self.mouse_was_pressed = mouse_is_pressed
 
-
         def _set_active_(self, is_active):
-        # Internal method to change the state of a ToolButton
+            # Internal method to change the state of a ToolButton
             if is_active:
                 self.state = True
             else:
                 self.state = False
-                
-    class ColorButton():
+
+    class ColorButton:
         """A class representing a color button in the GUI.
 
         This class defines a button for selecting colors.
@@ -113,8 +111,10 @@ class GUI:
         rect (pygame.Rect): The rectangle representing the button's position and size.
 
         """
-        STATIC_SELECTED = (0,0,0)
-        def __init__(self, x, y, color, screen,length, width):
+
+        STATIC_SELECTED = (0, 0, 0)
+
+        def __init__(self, x, y, color, screen, length, width):
             self.state = False
             self.screen = screen
             self.mouse_was_pressed = False
@@ -155,7 +155,8 @@ class GUI:
         """
         Initialize the GUI by creating the color and tool buttons.
 
-        This method sets up the GUI by creating instances of the ToolButton and ColorButton classes for each tool and color. 
+        This method sets up the GUI by creating instances of the ToolButton 
+        and ColorButton classes for each tool and color.
         It also sets the initial selected tool to be pencil and color to be black.
 
         Args:
@@ -252,16 +253,16 @@ class GUI:
         self.selected_color = selected_color
         pygame.display.flip
 
-
     def draw(self):
         """
         Draws the GUI on the screen.
 
-        This method is responsible for drawing the GUI on the screen. It first draws a grey bar and blue bar on top,
-        then it draws each tool button and color button on the GUI. Finally, it updates the selected color
-        and draws it on the GUI.
+        This method is responsible for drawing the GUI on the screen. 
+        It first draws a grey bar and blue bar on top,
+        then it draws each tool button and color button on the GUI. 
+        Finally, it updates the selected color and draws it on the GUI.
 
-        
+
         Args:
             None
 
@@ -295,8 +296,8 @@ class GUI:
         """
         Changes the currently selected color.
 
-        This method updates the static variable STATIC_SELECTED of the ColorButton class 
-        to the new color provided as an argument. This effectively changes the currently 
+        This method updates the static variable STATIC_SELECTED of the ColorButton class
+        to the new color provided as an argument. This effectively changes the currently
         selected color in the GUI.
 
         Args:
