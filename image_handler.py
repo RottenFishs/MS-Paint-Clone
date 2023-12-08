@@ -70,7 +70,7 @@ class ImageHandler:
         # Open save file dialog with limited file types
         file_path = filedialog.asksaveasfilename(
             filetypes=[("PNG File", "*.png"), ("JPEG File", "*.jpg")],
-            defaultextension=''
+            defaultextension="",
         )
         # Save screenshot if a file/filepath is selected
         if file_path:

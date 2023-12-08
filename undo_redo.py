@@ -54,8 +54,11 @@ class shortcut:
         """
         left_click = pygame.mouse.get_pressed()
         viable_tools = ["pencil", "brush", "eraser", "fill"]
-        if current_tool in viable_tools and pygame.mouse.get_pos()[
-                1] > 50 and left_click[0]:
+        if (
+            current_tool in viable_tools
+            and pygame.mouse.get_pos()[1] > 50
+            and left_click[0]
+        ):
             self.check = True
         else:
             self.check = False

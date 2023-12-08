@@ -118,11 +118,9 @@ while run_program:
             if event.key == pygame.K_o:
                 image_handler.load_image()
 
-            if event.key == pygame.K_z and (
-                    pygame.key.get_mods() & pygame.KMOD_LCTRL):
+            if event.key == pygame.K_z and (pygame.key.get_mods() & pygame.KMOD_LCTRL):
                 shortcut.undo(myCanvas)
-            if event.key == pygame.K_y and (
-                    pygame.key.get_mods() & pygame.KMOD_LCTRL):
+            if event.key == pygame.K_y and (pygame.key.get_mods() & pygame.KMOD_LCTRL):
                 shortcut.redo(myCanvas)
 
             if event.key == pygame.K_ESCAPE:

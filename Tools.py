@@ -2,7 +2,7 @@ import pygame
 import math
 
 
-class Tool():
+class Tool:
     """
     A class that represents a collection of drawing tools for a canvas.
 
@@ -18,7 +18,8 @@ class Tool():
         tool_dictionary (dict): A dictionary mapping tool names to their corresponding instances.
         current_tool (Tool): The currently selected tool.
     """
-    class Pencil():
+
+    class Pencil:
         """A class representing a pencil tool for drawing on the canvas.
 
         A tool used to draw onto the canvas with thin lines
@@ -63,24 +64,21 @@ class Tool():
                 # size.
                 new_current_pos = (
                     (current_pos[0] - canvas_obj.offset[0]) / canvas_obj.scale,
-                    (current_pos[1] - canvas_obj.offset[1]) / canvas_obj.scale
+                    (current_pos[1] - canvas_obj.offset[1]) / canvas_obj.scale,
                 )
 
                 # as well as the previous pos. But we don't want to actually
                 # edit it.
                 new_prev = (
                     (self.previous_pos[0] - canvas_obj.offset[0]) / canvas_obj.scale,
-                    (self.previous_pos[1] - canvas_obj.offset[1]) / canvas_obj.scale)
+                    (self.previous_pos[1] - canvas_obj.offset[1]) / canvas_obj.scale,
+                )
 
-                pygame.draw.line(
-                    canvas_obj.surface,
-                    color,
-                    new_current_pos,
-                    new_prev)
+                pygame.draw.line(canvas_obj.surface, color, new_current_pos, new_prev)
                 self.previous_pos = current_pos
                 pygame.display.flip()
 
-    class Brush():
+    class Brush:
         """A class representing a brush tool for drawing on the canvas.
 
         A tool used to draw onto the canvas with a size that is adjustable via the scroll wheel
@@ -135,14 +133,15 @@ class Tool():
                 # size.
                 new_current_pos = (
                     (current_pos[0] - canvas_obj.offset[0]) / canvas_obj.scale,
-                    (current_pos[1] - canvas_obj.offset[1]) / canvas_obj.scale
+                    (current_pos[1] - canvas_obj.offset[1]) / canvas_obj.scale,
                 )
 
                 # as well as the previous pos. But we don't want to actually
                 # edit it.
                 new_prev = (
                     (self.previous_pos[0] - canvas_obj.offset[0]) / canvas_obj.scale,
-                    (self.previous_pos[1] - canvas_obj.offset[1]) / canvas_obj.scale)
+                    (self.previous_pos[1] - canvas_obj.offset[1]) / canvas_obj.scale,
+                )
 
                 line_length = math.dist(new_prev, new_current_pos)
 
@@ -165,17 +164,26 @@ class Tool():
                         current_multi = steps - i
 
                         draw_coords = (
-                            ((new_prev[0] * prev_multi) + (new_current_pos[0] * current_multi)) / steps,
-                            ((new_prev[1] * prev_multi) + (new_current_pos[1] * current_multi)) / steps,
+                            (
+                                (new_prev[0] * prev_multi)
+                                + (new_current_pos[0] * current_multi)
+                            )
+                            / steps,
+                            (
+                                (new_prev[1] * prev_multi)
+                                + (new_current_pos[1] * current_multi)
+                            )
+                            / steps,
                         )
 
                         pygame.draw.circle(
-                            canvas_obj.surface, color, draw_coords, self.size)
+                            canvas_obj.surface, color, draw_coords, self.size
+                        )
 
                 self.previous_pos = current_pos
                 pygame.display.flip()
 
-    class Eraser():
+    class Eraser:
         """A class representing an eraser tool for erasing on the canvas.
 
         The eraser allows users to erase parts of their drawing on the canvas.
@@ -236,14 +244,15 @@ class Tool():
                 # size.
                 new_current_pos = (
                     (current_pos[0] - canvas_obj.offset[0]) / canvas_obj.scale,
-                    (current_pos[1] - canvas_obj.offset[1]) / canvas_obj.scale
+                    (current_pos[1] - canvas_obj.offset[1]) / canvas_obj.scale,
                 )
 
                 # as well as the previous pos. But we don't want to actually
                 # edit it.
                 new_prev = (
                     (self.previous_pos[0] - canvas_obj.offset[0]) / canvas_obj.scale,
-                    (self.previous_pos[1] - canvas_obj.offset[1]) / canvas_obj.scale)
+                    (self.previous_pos[1] - canvas_obj.offset[1]) / canvas_obj.scale,
+                )
 
                 line_length = math.dist(new_prev, new_current_pos)
 
@@ -266,17 +275,26 @@ class Tool():
                         current_multi = steps - i
 
                         draw_coords = (
-                            ((new_prev[0] * prev_multi) + (new_current_pos[0] * current_multi)) / steps,
-                            ((new_prev[1] * prev_multi) + (new_current_pos[1] * current_multi)) / steps,
+                            (
+                                (new_prev[0] * prev_multi)
+                                + (new_current_pos[0] * current_multi)
+                            )
+                            / steps,
+                            (
+                                (new_prev[1] * prev_multi)
+                                + (new_current_pos[1] * current_multi)
+                            )
+                            / steps,
                         )
 
                         pygame.draw.circle(
-                            canvas_obj.surface, self.color, draw_coords, self.size)
+                            canvas_obj.surface, self.color, draw_coords, self.size
+                        )
 
                 self.previous_pos = current_pos
                 pygame.display.flip()
 
-    class Fill():
+    class Fill:
         """
         A class representing a fill tool that colors closed shapes on the canvas.
 
@@ -320,9 +338,12 @@ class Tool():
                 # size.
                 new_current_pos = (
                     math.floor(
-                        (current_pos[0] - canvas_obj.offset[0]) / canvas_obj.scale),
+                        (current_pos[0] - canvas_obj.offset[0]) / canvas_obj.scale
+                    ),
                     math.floor(
-                        (current_pos[1] - canvas_obj.offset[1]) / canvas_obj.scale))
+                        (current_pos[1] - canvas_obj.offset[1]) / canvas_obj.scale
+                    ),
+                )
 
                 self.fill_pixel(new_current_pos, canvas_obj, color)
 
@@ -331,10 +352,12 @@ class Tool():
         # Private function to check and recursively fill in pixels.
         def fill_pixel(self, current_position, canvas_obj, color):
 
-            if current_position[0] >= 0 and \
-                    current_position[0] <= canvas_obj.width - 1 and \
-                    current_position[1] >= 0 and \
-                    current_position[1] <= canvas_obj.height - 1:
+            if (
+                current_position[0] >= 0
+                and current_position[0] <= canvas_obj.width - 1
+                and current_position[1] >= 0
+                and current_position[1] <= canvas_obj.height - 1
+            ):
 
                 old_color = canvas_obj.surface.get_at(current_position)
                 if old_color == color:
@@ -414,14 +437,11 @@ class Tool():
                 current_pos = pygame.mouse.get_pos()
 
                 canvas_obj.offset = (
-                    self.previous_offset[0] +
-                    current_pos[0] -
-                    self.previous_pos[0],
-                    self.previous_offset[1] +
-                    current_pos[1] -
-                    self.previous_pos[1])
+                    self.previous_offset[0] + current_pos[0] - self.previous_pos[0],
+                    self.previous_offset[1] + current_pos[1] - self.previous_pos[1],
+                )
 
-    class Eyedropper():
+    class Eyedropper:
         """
         A class representing an eyedropper tool for selecting colors on the canvas.
 
@@ -462,9 +482,12 @@ class Tool():
                 # size.
                 new_current_pos = (
                     math.floor(
-                        (current_pos[0] - canvas_obj.offset[0]) / canvas_obj.scale),
+                        (current_pos[0] - canvas_obj.offset[0]) / canvas_obj.scale
+                    ),
                     math.floor(
-                        (current_pos[1] - canvas_obj.offset[1]) / canvas_obj.scale))
+                        (current_pos[1] - canvas_obj.offset[1]) / canvas_obj.scale
+                    ),
+                )
 
                 self.color = canvas_obj.surface.get_at(new_current_pos)
                 GUI_obj.change_selected_color(self.color)

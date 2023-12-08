@@ -97,7 +97,7 @@ class GUI:
             else:
                 self.state = False
 
-    class ColorButton():
+    class ColorButton:
         """A class representing a color button in the GUI.
 
         This class defines a button for selecting colors.
@@ -111,6 +111,7 @@ class GUI:
         rect (pygame.Rect): The rectangle representing the button's position and size.
 
         """
+
         STATIC_SELECTED = (0, 0, 0)
 
         def __init__(self, x, y, color, screen, length, width):
@@ -167,12 +168,8 @@ class GUI:
         pencil_inactive_image = pygame.image.load("Images/pencil_inactive.png")
         pencil_active_image = pygame.image.load("Images/pencil_active.png")
         pencil = GUI.ToolButton(
-            20,
-            20,
-            pencil_inactive_image,
-            pencil_active_image,
-            self.screen,
-            "pencil")
+            20, 20, pencil_inactive_image, pencil_active_image, self.screen, "pencil"
+        )
         pencil._draw_()
         pencil._set_active_(True)
 
@@ -180,12 +177,8 @@ class GUI:
         eraser_inactive_image = pygame.image.load("Images/eraser_inactive.png")
         eraser_active_image = pygame.image.load("Images/eraser_active.png")
         eraser = GUI.ToolButton(
-            50,
-            20,
-            eraser_inactive_image,
-            eraser_active_image,
-            self.screen,
-            "eraser")
+            50, 20, eraser_inactive_image, eraser_active_image, self.screen, "eraser"
+        )
         eraser._draw_()
 
         # Fill tool
@@ -197,8 +190,7 @@ class GUI:
         fill._draw_()
 
         # Panning tool
-        panning_inactive_image = pygame.image.load(
-            "Images/panning_inactive.png")
+        panning_inactive_image = pygame.image.load("Images/panning_inactive.png")
         panning_active_image = pygame.image.load("Images/panning_active.png")
         panning = GUI.ToolButton(
             110,
@@ -214,19 +206,13 @@ class GUI:
         brush_inactive_image = pygame.image.load("Images/brush_inactive.png")
         brush_active_image = pygame.image.load("Images/brush_active.png")
         brush = GUI.ToolButton(
-            140,
-            20,
-            brush_inactive_image,
-            brush_active_image,
-            self.screen,
-            "brush")
+            140, 20, brush_inactive_image, brush_active_image, self.screen, "brush"
+        )
         brush._draw_()
 
         # Eyedropper tool
-        eyedropper_inactive_image = pygame.image.load(
-            "Images/eyedropper_inactive.png")
-        eyedropper_active_image = pygame.image.load(
-            "Images/eyedropper_active.png")
+        eyedropper_inactive_image = pygame.image.load("Images/eyedropper_inactive.png")
+        eyedropper_active_image = pygame.image.load("Images/eyedropper_active.png")
         eyedropper = GUI.ToolButton(
             170,
             20,
@@ -282,9 +268,7 @@ class GUI:
             None
         """
         # Grey Bar on top
-        pygame.draw.rect(
-            self.screen, (187, 192, 199), pygame.Rect(
-                0, 0, 512, 50))
+        pygame.draw.rect(self.screen, (187, 192, 199), pygame.Rect(0, 0, 512, 50))
         pygame.draw.rect(self.screen, (0, 0, 255), pygame.Rect(0, 0, 512, 8))
         self.brush._draw_()
         self.eraser._draw_()
