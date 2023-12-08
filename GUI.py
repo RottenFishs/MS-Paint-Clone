@@ -1,3 +1,4 @@
+"""Module that draws the GUI to the canvas"""
 import pygame # pylint: disable=import-error
 
 

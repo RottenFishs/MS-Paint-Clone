@@ -1,3 +1,4 @@
+"""Module that adds functionality to undo /redo"""
 import os
 import glob
 import pygame # pylint: disable=import-error

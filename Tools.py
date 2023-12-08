@@ -1,3 +1,4 @@
+"""Module that adds functionality to each of the tools"""
 import math
 import pygame # pylint: disable=import-error
 

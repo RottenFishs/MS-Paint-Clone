@@ -1,3 +1,4 @@
+"""Module that runs the whole program"""
 import pygame # pylint: disable=import-error
 import GUI
 import Tools
