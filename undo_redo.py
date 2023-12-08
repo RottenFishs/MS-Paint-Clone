@@ -1,18 +1,20 @@
-import pygame
 import os
 import glob
+import pygame # pylint: disable=import-error
 
 
 class shortcut:
     """
     A class that handles undo and redo operations for the canvas.
 
-    This class keeps track of all changes made to the canvas within the canvas_stack directory and allows the user to undo or redo these changes.
+    This class keeps track of all changes made to the canvas within the 
+    canvas_stack directory and allows the user to undo or redo these changes.
 
     Attributes:
         counter (int): A counter that keeps track of the current image displayed
         size (int): The total number of saved images in canvas_stack directory
-        check (bool): A flag indicating whether the current tool can make changes that should be tracked.
+        check (bool): A flag indicating whether the current tool can make 
+        changes that should be tracked.
     """
 
     def __init__(self, canvas_obj) -> None:

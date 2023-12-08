@@ -1,5 +1,5 @@
-import pygame
 import math
+import pygame # pylint: disable=import-error
 
 
 class Tool:
@@ -302,7 +302,8 @@ class Tool:
 
         Attributes:
             fill (bool): Flag indicating if the fill operation is currently active.
-            visited_pixels (set): A set storing the pixels that have been visited during the fill operation.
+            visited_pixels (set): A set storing the pixels that have been visited 
+            during the fill operation.
         """
 
         def __init__(self) -> None:

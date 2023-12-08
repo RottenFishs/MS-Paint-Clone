@@ -1,4 +1,4 @@
-import pygame
+import pygame # pylint: disable=import-error
 
 
 class GUI:
@@ -155,7 +155,8 @@ class GUI:
         """
         Initialize the GUI by creating the color and tool buttons.
 
-        This method sets up the GUI by creating instances of the ToolButton and ColorButton classes for each tool and color.
+        This method sets up the GUI by creating instances of the ToolButton 
+        and ColorButton classes for each tool and color.
         It also sets the initial selected tool to be pencil and color to be black.
 
         Args:
@@ -256,9 +257,10 @@ class GUI:
         """
         Draws the GUI on the screen.
 
-        This method is responsible for drawing the GUI on the screen. It first draws a grey bar and blue bar on top,
-        then it draws each tool button and color button on the GUI. Finally, it updates the selected color
-        and draws it on the GUI.
+        This method is responsible for drawing the GUI on the screen. 
+        It first draws a grey bar and blue bar on top,
+        then it draws each tool button and color button on the GUI. 
+        Finally, it updates the selected color and draws it on the GUI.
 
 
         Args:
