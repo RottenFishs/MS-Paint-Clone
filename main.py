@@ -7,10 +7,18 @@ from image_handler import ImageHandler
 
 # Initialize the Pygame window
 screen = pygame.display.set_mode((512, 512), pygame.RESIZABLE)
+"""The main window for the program"""
+
 pygame.display.set_caption("MS Paint Clone")
+
 RUN_PROGRAM = True
+"""A flag to indicate whether the program should be ran"""
+
 DIM0_SIZE = 512
+"""Variable that holds window dimension"""
 DIM1_SIZE = 512
+
+"""Variable that holds window dimension"""
 
 
 class Canvas:
@@ -77,23 +85,27 @@ class Canvas:
 
 
 myCanvas = Canvas()
+"""Variable for main.py's canvas"""
 
 main_gui = GUI.GUI(screen)
+"""Variable for main.py's GUI object"""
 
 fill_color = (255, 255, 255)
-
+"""Variable used to color the screen white"""
 pygame.draw.rect(screen, fill_color, pygame.Rect(0, 0, 512, 512))
 
 pygame.display.flip()
 
 
 tool = Tools.Tool()
+"""Variable to run functions from the Tool object"""
 tool.__update_Tool__(main_gui.get_selected_tool())
 
 shortcut = undo_redo.shortcut(myCanvas)
+"""Variable to run functions from the Shortcut object"""
 
 image_handler = ImageHandler(myCanvas)
-
+"""Variable to run functions from the ImageHandler object"""
 while RUN_PROGRAM:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
