@@ -303,7 +303,7 @@ class Tool:
 
         Attributes:
             fill (bool): Flag indicating if the fill operation is currently active.
-            visited_pixels (set): A set storing the pixels that have been visited 
+            visited_pixels (set): A set storing the pixels that have been visited
             during the fill operation.
         """
 

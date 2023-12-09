@@ -88,7 +88,7 @@ class GUI:
                 self.image = self.active_image
 
             self.screen.blit(self.image, (self.rect.x, self.rect.y))
-            pygame.display.flip
+            pygame.display.flip()
             self.mouse_was_pressed = mouse_is_pressed
 
         def _set_active_(self, is_active):
@@ -130,21 +130,17 @@ class GUI:
             if self.rect.collidepoint(position):
                 if (
                     mouse_is_pressed
-                    and self.clicked == False
                     and not self.mouse_was_pressed
                 ):
-                    self.clicked = True
                     self.state = True
                     GUI.ColorButton.STATIC_SELECTED = self.color
 
             if GUI.ColorButton.STATIC_SELECTED != self.color:
                 self.state = False
 
-            if not mouse_is_pressed:
-                self.clicked = False
 
             pygame.draw.rect(self.screen, self.color, self.rect)
-            pygame.display.flip
+            pygame.display.flip()
             self.mouse_was_pressed = mouse_is_pressed
 
         def _set_color_to_selected_(self):
@@ -156,7 +152,7 @@ class GUI:
         """
         Initialize the GUI by creating the color and tool buttons.
 
-        This method sets up the GUI by creating instances of the ToolButton 
+        This method sets up the GUI by creating instances of the ToolButton
         and ColorButton classes for each tool and color.
         It also sets the initial selected tool to be pencil and color to be black.
 
@@ -252,15 +248,15 @@ class GUI:
         self.pink = pink
         self.black = black
         self.selected_color = selected_color
-        pygame.display.flip
+        pygame.display.flip()
 
     def draw(self):
         """
         Draws the GUI on the screen.
 
-        This method is responsible for drawing the GUI on the screen. 
+        This method is responsible for drawing the GUI on the screen.
         It first draws a grey bar and blue bar on top,
-        then it draws each tool button and color button on the GUI. 
+        then it draws each tool button and color button on the GUI.
         Finally, it updates the selected color and draws it on the GUI.
 
 
@@ -291,7 +287,7 @@ class GUI:
         self.selected_color._set_color_to_selected_()
         self.selected_color._draw_()
 
-        pygame.display.flip
+        pygame.display.flip()
 
     def change_selected_color(self, new_color):
         """

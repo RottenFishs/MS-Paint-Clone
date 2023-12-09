@@ -61,12 +61,12 @@ class Canvas:
         """
         Draws the canvas on the provided screen.
 
-        This method first fills the entire screen with a gray color. Then, 
-        it scales the surface of the canvasaccording to the current scale 
+        This method first fills the entire screen with a gray color. Then,
+        it scales the surface of the canvasaccording to the current scale
         factor and blits it onto the provided screen at the current offset.
 
         Args:
-            window_screen (pygame.Surface): The Pygame screen 
+            window_screen (pygame.Surface): The Pygame screen
             surface on which the canvas will be drawn.
         """
 
@@ -154,6 +154,5 @@ while RUN_PROGRAM:
     main_gui.draw()
 
     tool.__update_Tool__(main_gui.get_selected_tool())
-    pass
 
     pygame.display.flip()
